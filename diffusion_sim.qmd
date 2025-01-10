@@ -606,7 +606,7 @@ full_join(sim_choice_p, sim_rt_q) %>%
 
 ## Shiny App
 
-
+To have a good deal of fun exploring how the different parameters of a diffusion model influence its predicted choice and RT distributions, download [this Shiny app](https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/DiffusionModel/app.R) and run it from RStudio.  You will also need to download [this R script](https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/DiffusionModel/wienr_fit_utils.r) into the same directory as the Shiny app.  The Shiny app has some additional functionality that we will see more of in the next chapter.
 
 ## Exercises
 

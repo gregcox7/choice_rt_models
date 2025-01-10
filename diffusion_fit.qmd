@@ -10,3 +10,22 @@ set.seed(12222)
 source("wienr_fit_utils.r")
 ```
 
+```{r}
+#| code-fold: show
+
+download.file("https://github.com/gregcox7/choice_rt_models/raw/refs/heads/main/data/blast_data.rdata", "blast_data.rdata")
+load("blast_data.rdata")
+```
+
+```{r}
+#| code-fold: show
+
+glimpse(blast_data)
+```
+
+```{r}
+#| code-fold: show
+
+blast_data_cond <- blast_data %>%
+    filter(group == "Experienced", subject == "M002", blockType == "Accuracy")
+```

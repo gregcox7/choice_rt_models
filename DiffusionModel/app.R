@@ -29,7 +29,7 @@ qWDM <- function(p, response, ...) {
     return(res$root)
 }
 
-source("../wienr_fit_utils.r")
+source("wienr_fit_utils.r")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
