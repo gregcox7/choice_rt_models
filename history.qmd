@@ -1,0 +1,164 @@
+# Historical Perspectives
+
+This chapter provides some historical context for the development of the two main classes of choice-RT models: random walk and diffusion models, which are chiefly employed to model situations where people choose between two options; and counter/accumulator models, which can also model situations with two options but also apply to situations with more than two options.
+
+## Random walk and diffusion models
+
+Early models of human choice behavior treated choice as a statistical decision of the sort described by @NeymanPearson1933, in which a sample of data (e.g., a stimulus) is presumed to be drawn from a set of underlying generating distributions and the task of the participant is to select the distribution most likely to have generated the data. Specifically, the decision, given data $x$ and hypotheses $H_0$ and $H_1$, is governed by a likelihood ratio:
+
+$$
+L(x) = \frac{\Pr (H_1 | x)}{\Pr (H_0 | x)} = \frac{\Pr (x | H_1)}{\Pr (x | H_0)} \frac{\Pr (H_1)}{\Pr (H_0)} \text{.}
+$$
+
+If this ratio is greater than a threshold value $\theta$, hypothesis $H_1$ is selected otherwise $H_0$ is chosen. Signal detection theory [@MacmillanCreelman2005] is the most prominent theoretical framework in this vein, and continues to be a useful and widely-applied model of choice. Its utility lies in being able to give clear interpretations to notions like bias (e.g., $\theta$) and discriminability (proportional to $\frac{\Pr (x | H_1)}{\Pr (x | H_0)}$). Signal detection theory, however, assumes that the decision is based on a fixed amount of evidence and thus ignores the dynamic process of evidence accumulation.
+
+### The Sequential Probability Ratio Test
+
+The question of how, when evidence accumulates over time, one might *arrive at* a final decision was first treated by @Wald1945, who proposed a sequential probability ratio test (SPRT). Assume that data samples $x_i$, $i = 1, \dotsc, n$, arrive one at a time, and are sampled independently from the same underlying generating distribution, which is either $H_1$ or $H_0$. Then, the order in which the samples arrive is immaterial (they are "exchangeable") and to compute the likelihood ratio $L(n)$ given the $n$ samples we currently possess, we need only multiply the ratios for each sample:
+
+$$
+L(n) = \left[ \prod_{i=1}^n \frac{\Pr (x_i | H_1)}{\Pr (x_i | H_0)} \right] \frac{\Pr (H_1)}{\Pr (H_0)} \text{.}
+$$
+
+Thus, taking the logarithm of the likelihood ratio, we can express the change in log-likelihood that results from the $t$th new sample:
+
+$$
+\Delta L(t) = \log \frac{\Pr (x_t | H_1)}{\Pr (x_t | H_0)} \text{,}
+$$
+
+where $L(0) = \log \frac{\Pr (H_1)}{\Pr (H_0)}$, the log of the ratio of the priors. The question that Wald addressed in this context was when to stop collecting new data samples and make a decision. Define two thresholds, $\theta_1$ and $\theta_0$, such that the decision maker will decide $H_1$ if $L(t) \geq \theta_1$ and will decide $H_0$ if $L(t) \leq \theta_0$ and $\theta_1 > 0 > \theta_0$. Assuming the decision maker has a desired type I error rate $\alpha$ (probability of deciding in favor of $H_1$ when $H_0$ was the true generating distribution) and type II error rate $\beta$ (probability of deciding $H_0$ when $H_1$ is true), @Wald1945 showed that the thresholds should be set such that $\theta_1 \leq \log (1 - \beta) - \log \alpha$ and $\theta_0 \geq \log \beta - \log (1 - \alpha)$ in order to achieve maximum power. The thresholds may not be exactly equal to the specified values as a consequence of the fact that evidence arrives in a discrete manner and hence might "jump" over a threshold rather than actually equaling it.
+
+An important consequence of the SPRT is that the amount of evidence required to make a decision for either $H_1$ or $H_0$---and thus, in general, the number of samples required to make a decision---is tightly coupled to the expected error rates. For example, if the decision maker is willing to make more type I errors (with rate $\alpha$), then both $\theta_1$ and $\theta_0$ will decrease, reflecting an increased willingness to respond $H_1$ and *not* $H_0$ (assuming $\beta$ is held constant). This has the consequence that, on average, it will take less time (fewer samples) before the decision maker is willing to respond $H_1$ and more time (more samples) before the decision maker is willing to commit to $H_0$. Thus, speed and accuracy can trade-off with one another, and the speed of particular responses (whether correct or incorrect) can be affected by the biases of the decision maker.
+
+@Stone1960 suggested that the psychological process of decision making might be governed by something akin to the SPRT, an idea that received more explicit Bayesian treatment in @Edwards1965. Unfortunately, the SPRT predicts that the number of samples to reach a decision is independent of whether that decision was correct or not. That is, error and correct decision times are predicted to be equal (or, at least, drawn from the same distribution). This is very rarely true in observed data, hence a more general decision model is called for.
+
+### Random Walk
+
+The sequential probability ratio test can be considered a kind of stationary random walk in discrete time and continuous space. This is a consequence of the fact that evidence arrives sequentially and perturbs the decision maker's current beliefs ($L(t)$) to a degree that is independent of those beliefs. Since the evidence acquired on each time step, $x_t$, is sampled independently, we can treat the resulting likelihood ratio change $\Delta L(t)$ as an independent sample from some distribution. We can thus consider $L(t)$ to simply accumulate samples of a random variable with density $f(\Delta L)$ and moment generating function $M(\phi)$.
+
+The evidence density will, of course, depend on the true state of the world, such that if $H_1$ is true, the evidence density $f_1(\Delta L)$ will produce more evidence in favor of $H_1$ and likewise for density $f_0(\Delta L)$. The properties of the moment generating functions of these densities, $M_1(\phi)$ and $M_0(\phi)$, respectively, determine the properties of the random walk's predicted RT's. Because, in the SPRT, evidence takes the form of a likelihood ratio, the evidence distributions are symmetric, i.e., $f_1(\Delta L) = f_0(-\Delta L)$, meaning the moment generating functions are related by translation: $M_1(\phi + 1) = M_0(\phi)$. @SwenssonGreen1977 showed that any random walk model for which the moment generating functions of the evidence distributions are related by translation must predict equal RTs to error and correct responses.
+
+A random walk model of human response dynamics was studied extensively as part of the theory of relative judgment [@Link1975; @LinkHeath1975]. These authors generally assumed that the distributions of differences $\Delta L(t)$ are symmetric with respect to the two alternatives, in the way described above. They further assumed that the decision thresholds were symmetric, i.e., $\theta_1 = -\theta_0$. Despite these restrictions, this random walk model can predict different RT's for errors and correct responses. In particular, the difference between mean correct and error RTs in the theory of relative judgment is given by 
+$$
+\begin{align}
+RT( \text{Respond } H_1 | H_1) - RT( \text{Respond } H_0 | H_1) & = \left( \frac{\theta_1}{\mu_1} \right) \left( \frac{\gamma_1 - 1}{\gamma_1} \right) \\
+RT( \text{Respond } H_0 | H_0) - RT( \text{Respond } H_1 | H_0) & = \left( \frac{\theta_0}{\mu_1} \right) \left( \frac{\gamma_1 - 1}{\gamma_1} \right)
+\end{align}
+$$
+
+where $\mu_i$ is the mean of evidence density $f_i(\Delta L)$ and $\gamma_i$ is its third moment, and $\mu_1 = -\mu_0$ and $\gamma_1 = -\gamma_0$ [@LinkHeath1975]. Thus, if $\gamma_1 \neq 1$, errors may be either faster than correct responses ($\gamma_1 > 1$) or slower ($\gamma_1 < 1$). Critically, however, the relationship between error and correct RT must be of the same sign regardless of the true evidence generating distribution, which need not be the case in observed data. By relaxing the assumptions of symmetry, such that the moment generating functions of the evidence distributions are related by both scaling and translation ($M_0(\phi) = k M_1(\phi + 1)$, where $k$ is a constant), @Ashby1983 was able to show that a random walk could predict any ordering of mean RTs for correct and error responses.
+
+### The Wiener Diffusion Process
+
+The evidence generating density $f_i(\Delta L)$ can be decomposed into an expectation, $\mu$, and a noise distribution $\nu$, which is simply the original distribution with the expected value ($\mu$) subtracted. The resulting stochastic difference equation for $L(t)$ is
+
+$$
+\Delta L(t) = \left[ \mu + \nu(t) \right] \Delta t \text{,}
+$$
+
+where we have now explicitly introduced $\Delta t$ (up to now, $\Delta t = 1$) and $\nu(t)$ represents a sample drawn from the noise distribution $\nu$ at time $t$.
+
+Let us now assume that the evidence generating distribution is Gaussian with mean $\mu$ and variance $\sigma^2$. Then, we can consider the noise distribution in the above difference equation to be a Gaussian distribution with mean zero (we have subtracted out $\mu$) and variance $\sigma^2$, which we denote $\mathcal{N}(0, \sigma^2)$. We now have
+
+$$
+\Delta L(t) = \left[ \mu + \mathcal{N}(0, \sigma^2) \right] \Delta t \text{.}
+$$
+
+In addition, we can rewrite $\mathcal{N}(0, \sigma^2)$ as a sample from a standard (zero mean, unit variance) Gaussian, multiplied by $\sigma$. This gives us
+
+$$
+\Delta L(t) = \mu \Delta t + \mathcal{N}(0, 1) \sigma \sqrt{\Delta t} \text{.}
+$$
+
+By taking the limit $\Delta t \rightarrow 0$, we can move from discrete time to continuous time. In so doing, we have transformed the Gaussian random walk into the Wiener drift-diffusion process:
+
+$$
+d L(t) = \mu d t + \mathcal{N}(0, 1) \sigma \sqrt{dt} \text{.}
+$$
+
+@Ratcliff1978 modeled human responses as the outcome of a Wiener diffusion where the mean drift rate, $\mu$, reflects the relative amount of evidence favoring one response over the other while $\sigma$ reflects the noise inherent in the evidence-sampling process. Because each infinitesimal step of the evidence accumulation process comes from a normal distribution, the density over the accumulated evidence at time $t$ is another normal distribution:
+
+$$
+\Pr (L(t) = x | t) = \frac{1}{\sqrt{2 \pi \sigma^2 t}} \exp \left[ \frac{\left(x - \mu t \right)^2}{2 \sigma^2 t} \right] \sim \mathcal{N}(\mu t, \sigma^2 t) \text{.}
+$$
+
+This makes it easy to calculate $d'$, the familiar index of sensitivity from SDT, in the context of the diffusion model. @Ratcliff1978 assumed that the mean drift rate $\mu$ was itself sampled from a normal distribution with mean $u$ and variance $\eta$ for each stimulus. We must thus integrate over $\mu$ to express the distribution of evidence as a function of time:
+
+$$
+\begin{align}
+\Pr (L(t) = x | t) = & \int_{-\infty}^{\infty} \mathcal{N}(\mu t, \sigma^2 t) \mathcal{N}(u, \eta) d \mu \\
+= & \int_{-\infty}^{\infty} \frac{1}{\sqrt{2 \pi \sigma^2 t}} \exp \left[ \frac{\left(x - \mu t \right)^2}{2 \sigma^2 t} \right] \frac{1}{\sqrt{2 \pi \eta^2}} \exp \left[ \frac{\left(\mu - u \right)^2}{2 \eta^2} \right] d \mu \\
+= & \frac{1}{\sqrt{2 \pi t ( \eta^2 t + \sigma^2 )}} \exp \left[ \frac{\left(x - u t \right)^2}{2 t ( \eta^2 t + \sigma^2) } \right] \sim \mathcal{N}(u t, t ( \eta^2 t + \sigma^2)) \text{.}
+\end{align}
+$$
+
+If $u$ is the mean of the signal distribution (from which mean drift rates are drawn) and $v$ is the mean of the noise distribution, $d'(t)$ as a function of time $t$ is simply:
+
+$$
+d'(t) = \frac{ut - vt}{ \sqrt{t (\eta^2 t + \sigma^2)} } = \frac{u - v}{\eta \sqrt{1 + \frac{\sigma^2}{\eta^2 t}}} \text{.}
+$$
+
+This is a negatively-accelerated function of time, and reaches an asymptote as $t \rightarrow \infty$, $d'(t) \rightarrow \frac{u - v}{\eta}$. This formula for $d'$ will prove useful in subsequent applications of the diffusion model to situations with nonstationary evidence distributions.
+
+Finally, we note the diffusion model predictions for response probabilities and latencies: Assuming that the process starts at some point $z > 0$ and $\theta_1 > z$ and $\theta_0 = 0$, the probability of reaching $\theta_0 = 0$ (making a $H_0$ decision) is
+
+$$
+\Pr ( H_0 | \mu, z, \theta_1, \sigma ) = \frac{ \exp \left( - \frac{2 \mu \theta_1}{\sigma^2} \right) - \exp \left( - \frac{2 \mu z}{\sigma^2} \right)}{\exp \left( - \frac{2 \mu \theta_1}{\sigma^2} \right) - 1}
+$$
+
+while the probability density for times $t$ at which $\theta_0$ is reached is
+
+$$
+f_0 (t | \mu, z, \theta_1, \sigma ) = \frac{1}{\Pr (H_0 | \mu, z, \theta_1, \sigma)} \frac{\pi \sigma^2}{\theta_1^2} \exp \left( - \frac{z \mu}{\sigma^2} \right) \sum_{k=1}^{\infty} k \sin \left( \frac{\pi z k}{\theta_1} \right) \exp \left[- \frac{1}{2} t \left( \frac{\mu^2}{\sigma^2} + \frac{\pi^2 k^2 \sigma^2}{\theta_1^2} \right) \right] \text{.}
+$$
+
+The probability of making a $H_1$ response is simply $1 - \Pr (H_0 | \mu, z, \theta_1, \sigma )$ while the density for response times given an $H_1$ response is
+
+$$
+\begin{align}
+f_1 (t | & \mu, z, \theta_1, \sigma ) = \\
+& \frac{1}{\Pr (H_1 | \mu, z, \theta_1, \sigma)} \frac{\pi \sigma^2}{\theta_1^2} \exp \left( \frac{(\theta_1 - z) \mu}{\sigma^2} \right) \sum_{k=1}^{\infty} k \sin \left( \frac{\pi (\theta_1 - z) k}{\theta_1} \right) \exp \left[ \frac{1}{2} t \left( \frac{\mu^2}{\sigma^2} - \frac{\pi^2 k^2 \sigma^2}{\theta_1^2} \right) \right] \text{.}
+\end{align}
+$$
+
+These reaction time distributions are positively-skewed, as is usually observed in reaction time distributions. More "difficult" decisions, in which $u$ and $v$ do not differ substantially, thus reducing the absolute value of $\mu$, will naturally result not only in longer reaction times, but more skewed reaction times according to the diffusion model.
+
+### Optimality and Multiple Alternatives
+
+The Wiener diffusion process, as a natural extension of the SPRT, can be shown to be the optimal decision strategy when there are two alternatives and the evidence-generating distribution is stationary and perturbed by Gaussian noise [@BogaczEtAl2006]. The diffusion model can be extended to model choices between more than two alternatives by extending the Wiener process into multiple dimensions [@Smith2000]. If the decision thresholds are orthogonal to one another (which might occur if they are parallel to the coordinate axes), a multidimensional diffusion essentially becomes a parallel race model (see below). While this extension is not conceptually difficult, it runs into the problem that a diffusion in more than two dimensions is no longer guaranteed to eventually hit every point in the state space. Thus, it is far harder to calculate the probability of a multidimensional diffusion process hitting a boundary, let alone the density of its first passage times. There are cases, however, where a multidimensional diffusion may be reduced a more tractable one in a single dimension [@Ashby2000; @Smith2000].
+
+Instead of treating a decision between multiple alternatives as a multidimensional diffusion, it can be explicitly modeled as a set of simultaneous diffusions that independently accumulate evidence for each alternative. Just as the unidimensional diffusion is equivalent to the SPRT, a set of $M$ parallel diffusions is related to the "$M$-ary Sequential Probability Ratio Test" [MSPRT; @BaumVeeravelli1994]. The MSPRT has no single optimal decision rule, but one candidate procedure is to choose option $H_k$ when its posterior probability given the evidence $X$ up to time $t$, $\Pr (H_k | X_t)$, exceeds a threshold level of probability. This threshold is equal to the expected hit rate, conditioned on response $H_k$. This rule is optimal to the extent that it produces a decision with the desired level of accuracy in the shortest time [@BogaczGurney2007; @JonesEtAl2009; @ZhangChangInRev].
+
+To formally express the diffusion version of the MSPRT, recall that Bayes rule relates the posterior probability of a hypothesis $H_k$ to the likelihood, prior, and evidence: $$
+\Pr (H_k | X_t) = \frac{\Pr (X_t | H_k) \Pr (H_k)}{\sum_{i=1}^M \Pr (X_t | H_i) \Pr (H_i)} \text{.}
+$$ Taking the logarithm of the above yields $$
+\log \Pr (H_k | X_t) = \log \Pr (X_t | H_k) + \log \Pr (H_k) - \log \left[ \sum_{i=1}^M \exp \left( \log \Pr (X_t | H_i) + \log \Pr (H_i) \right) \right] \text{.}
+$$ Assuming, as we have all along, that evidence arrives sequentially and is sampled independently from a stationary evidence-generating distribution, we can let $L_k(t) = \sum_{i=0}^t \log \Pr (x_i | H_k) + \log \Pr (H_k)$, such that $\Delta L_k(t) = \log \Pr (x_t | H_k) \Delta t$. Finally, by assuming that the likelihood functions are Gaussian and that $\Delta t \rightarrow 0$, we obtain a Wiener drift-diffusion process for each alternative. The decision rule for the multi-alternative diffusion model thus requires that the aggregate state for an option $k$ be sufficiently large relative to the sum of the aggregate states of all alternatives. Thus, while evidence may accumulate for each alternative independently and in parallel, the alternatives compete with each other in order to actually produce a decision. In the two-alternative case, the predictions are identical to the standard SPRT (and, thus, to the unidimensional diffusion model), in which only two alternatives compete with one another. This extension of the diffusion model to multiple alternatives can be made even more powerful by assuming that the decision maker must *infer* the underlying mean drift rates for each option, leading to a rational explanation for certain trial-order effects [@JonesEtAl2009].
+
+## Counter and Accumulator Models
+
+The extension of the diffusion model to multiple alternatives leads directly into a potentially more general class of models for response dynamics, namely, the counter or accumulator models. The two-alternative SPRT, random walk, and diffusion models necessarily consider evidence for one alternative to be equal evidence \emph{against} the other alternative. This is also the case when there are more than two alternatives. However, there are situations in which it does not make sense to consider strict competition among alternatives. Consider a situation in which you are choosing between two desserts of equal price, the key lime pie and the German chocolate cake. The fact that you like coconut might increment your preference for German chocolate cake, but it is hard to see why it should reduce your preference for key lime pie. You may have different degrees of preference for either option, and that difference may drive your eventual decision, but there is no reason to think your preferences should be anti-correlated, as is assumed by the models we have considered thus far.
+
+### Counter Models
+
+"Counter" models are so called because, in their original form, each choice alternative was presumed to be associated with a count of the number of "pieces" of evidence in favor of it, and the corresponding response would be made when one counter reached a threshold. The first such model was by @LaBerge1962, in which time progressed in discrete intervals of equal size. On each time-step, a single "piece" of evidence was added to a counter representing one of the possible alternatives, and a final decision made when one of the counters reaches a threshold. In other words, each alternative "races" to reach its threshold and produce a response.
+
+Two (not mutually exclusive) ways to extend the counter model are apparent: First, to make the state space (the possible evidence values) continuous, rather than discrete; and second, to make time continuous rather than discrete. The accumulator model of @Vickers1970 and @SmithVickers1988 assumes that time remains discrete while the values of evidence may take on continuous values, perhaps from a truncated normal or exponential distribution. The parameters of each distribution reflect the amount of evidence for each alternative, and the thresholds on each accumulator reflect response biases. Alternatively, the Poisson counter model [@Pike1973; @TownsendAshby1983; @SmithVanZandt2000] assumes that the amount of evidence accumulated at any one time is fixed, but the interarrival times for that evidence are variable. Specifically, they are sampled independently from an exponential distribution, with rates that differ between accumulators. In the Poisson counter model, thresholds again reflect response biases, while the rate of arrivals to a particular counter corresponds to the amount of evidence in favor of that response. Thus, unless there is a bias against the correct response, the Poisson counter model will predict faster RT for correct responses than errors, no matter what sources of variability are added to the model [@RatcliffSmith2004].
+
+When $M$ Poisson counters are running independently and in parallel with interarrival rates $\lambda_1, \lambda_2, \dotsc, \lambda_M$, the entire decision process can be construed as a Poisson process with a rate that is the sum of the rates of the individual accumulators, $\lambda_1 + \lambda_2 + \dotsb + \lambda_M$ [@TownsendAshby1983]. Thus, regardless of the final choice, if it is reached after $N$ counts have accumulated across all the counters, the RT distribution is a Gamma distribution: $$
+f (t | N, \lambda_1, \lambda_2, \dotsc, \lambda_M) = \left(\sum_{i=1}^M \lambda_i \right)^{-N} \exp \left( -\frac{t}{\sum_{i=1}^M \lambda_i} \right) \frac{t^{N-1}}{\left(N - 1 \right)!} \text{.}
+$$ This has two important consequences: First, RT distributions are predicted to become less skewed as the mean number of samples $N$ increases (the skewness of a Gamma distribution is $\frac{2}{\sqrt{N}}$), which is not supported by most empirical RT distributions. More importantly, however, RT is predicted to be faster with increasing number of alternatives, owing to the fact that each counter contributes $\lambda_i$ to the overall processing rate. This is a general property of models with independent parallel accumulators for each decision, regardless of the choice of distributions or parameters [@TownsendAshby1983]. There are many situations, however, in which increasing the number of alternative responses (and thus the number of parallel accumulators) results in an *increase* in reaction time. This can limit the utility of parallel counter models to account for observed response dynamics unless accumulation rates decrease with the number of accumulators [@RatcliffSmith2004; @TeodorescuUsher2013].
+
+### Partially Correlated Accumulators
+
+If random walk and diffusion models involve accumulators for each alternative that are perfectly anticorrelated, and counter/accumulator models posit accumulators that are totally uncorrelated, perhaps a middle ground might be found? The Leaky, Competing Accumulator model [LCA, @UsherMcClelland2001] is one such example. In this model, each of the $M$ accumulators is presumed to be subject to Gaussian noise and can be described by the following differential equation: $$
+d L_i(t) = \left( I_i - \gamma L_i(t) - \beta \sum_{j \neq i}^M L_j(t) \right) dt + \sigma \mathcal{N}(0, 1) \sqrt{dt} \text{.}
+$$ This equation has several terms that we now parcel out: $I_i$ is the exogenous (stimulus-driven) input to accumulator $i$, analogous to the drift rate in a diffusion; the $-\gamma L_i(t)$ term implements "leakage", similar to an OU process (see below) when $0 \leq \gamma \leq 1$; $\beta \sum_{j \neq i}^M L_j(t)$ implements a (partial) negative correlation between accumulators; and the final term is simply the familiar Gaussian noise term. There is, further, a critical nonlinearity in the model, namely, that $L_i$ is never permitted to be negative. The theoretical consequence of this is that accumulators can only act to inhibit one another. The practical consequence is that the LCA model is not analytically tractable, although it can be approximated by two OU processes in the two-accumulator case [@UsherMcClelland2001; @BogaczEtAl2007]. This nonlinearity may, however, prove advantageous by reducing excessive inhibition from poor choices [@BogaczEtAl2007].
+
+If this nonlinearity is ignored, the LCA can be made identical, at least in the two-alternative case, to a race model (by letting $\gamma = \beta = 0$), to a diffusion model (by letting $\gamma = 0$ and $\beta = 1$), or to an OU process (by letting $\beta = 1$). Thus, it has great flexibility in predicting a variety of patterns of reaction time and accuracy, especially when incorporating payoffs [@UsherMcClelland2004].
+
+### Ballistic Accumulators
+
+Although they will not be addressed subsequently, we briefly alight on a recent set of models that are "ballistic" in the sense that they are completely deterministic, once their initial conditions (parameters, starting points, and thresholds) are set. The first of these was proposed by @BrownHeathcote2005 as a non-stochastic version of the LCA model. It is nonetheless able to account for decision data because, although the within-trial dynamics of the model are deterministic, it is subject to between-trial noise. In particular, the exact external input to each accumulator is perturbed by Gaussian noise on each trial, and the initial value of each accumulator is randomly sampled from a uniform distribution. @BrownHeathcote2008 extend this idea to the diffusion model in the Linear Ballistic Accumulator (LBA). This, too, is able to account for observed reaction time and accuracy data quite well [@DonkinEtAl2011].
+
+Sequential sampling models rely on the idea that at any one time, evidence may be noisy, and so to make accurate decisions, noisy evidence samples must be integrated over time. What, then, are we to make of the idea that ballistic models without noisy evidence can still fit data? I argue that it is a question of interpretation: Sequential sampling models, from the SPRT to the diffusion model, attempt to model what is thought to be the "real" state of the world: that evidence itself is noisy. Ballistic models, on the other hand, are best thought of as "measurement models", in that they re-describe or summarize the data (accuracy and reaction time) in a way that makes it amenable to cognitive interpretation. The fact that, by abandoning the notion of sampling noise, ballistic models are still able to fit data should not worry anyone: Ballistic models are trying to describe the data by making as few assumptions as possible, while stochastic models are trying instead to describe the underlying state of the world.

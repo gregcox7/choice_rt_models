@@ -1,0 +1,12 @@
+# Preface {.unnumbered}
+
+This is a collection of notes and examples that serve as an introduction to cognitive models of choice and response time.  To follow along in R, make sure you have the following packages installed.
+
+```{r eval = FALSE, echo = TRUE}
+#| code-fold: show
+
+library(tidyverse)
+library(WienR)
+library(fddm)
+library(rtdists)
+```
