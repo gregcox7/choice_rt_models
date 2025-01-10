@@ -1,2 +1,4 @@
 # choice_rt_models
-A set of tutorial notes for cognitive models of choice and response time
+A set of tutorial notes for cognitive models of choice and response time.
+
+This is a test.
