@@ -1,4 +1,5 @@
 library(WienR)
+library(ucminf)
 
 ezddm <- function(propCorrect, rtCorrectVariance_seconds, rtCorrectMean_seconds, nTrials, s = 1) {
     # This function is adapted from the function of the same name in the `fddm` package
@@ -17,7 +18,17 @@ ezddm <- function(propCorrect, rtCorrectVariance_seconds, rtCorrectMean_seconds,
     return(c("a" = a, "v" = v, "Ter" = Ter))
 }
 
-fit_wienr <- function(rt, response, fit_sv = FALSE, fit_sw = FALSE, fit_st0 = FALSE, optim_control = list(), optim_method = "L-BFGS-B", init_par = NULL, run_cleanup_fit = FALSE, drift_index = NULL, bound_index = NULL, resid_index = NULL, ...) {
+qWDM <- function(p, response, ...) {
+    p_resp <- WienerCDF(Inf, response = response, ...)$value
+    
+    res <- try(uniroot(f = function(t) WienerCDF(t, response = response, ...)$value / p_resp - p, interval = c(0, 5), f.lower = -p, extendInt = "upX"))
+    
+    if (class(res) == "try-error") return(NA)
+    
+    return(res$root)
+}
+
+fit_wienr <- function(rt, response, fit_sv = FALSE, fit_sw = FALSE, fit_st0 = FALSE, optim_control = list(), init_par = NULL, drift_index = NULL, bound_index = NULL, resid_index = NULL, ...) {
     if (is.character(response)) response <- as.numeric(as.factor(response))
     if (is.factor(response)) response <- as.numeric(response)
     
@@ -50,37 +61,40 @@ fit_wienr <- function(rt, response, fit_sv = FALSE, fit_sw = FALSE, fit_st0 = FA
     if (fit_sw) par_names <- c(par_names, paste0("sw[", 1:n_bound, "]"))
     if (fit_st0) par_names <- c(par_names, paste0("st0[", 1:n_resid, "]"))
     
-    if (is.null(init_par)) {
-        ez_init <- ezddm(mean(response == 2), var(rt[response == 2]), mean(rt[response == 2]), length(response))
-        
-        init_par <- rep(NA, length(par_names))
-        names(init_par) <- par_names
-        
-        init_par[startsWith(par_names, "a[")] <- unname(ez_init["a"])
-        init_par[startsWith(par_names, "v[")] <- unname(ez_init["v"])
-        init_par[startsWith(par_names, "w[")] <- 0.5
-        init_par[startsWith(par_names, "t0[")] <- unname(min(0.99 * min(rt), ez_init["Ter"]))
-        
-        if (fit_sv) init_par[startsWith(par_names, "sv[")] <- 0.5
-        if (fit_sw) init_par[startsWith(par_names, "sw[")] <- 0.2
-        if (fit_st0) init_par[startsWith(par_names, "st0[")] <- 0.2
+    init_to_use <- rep(NA, length(par_names))
+    names(init_to_use) <- par_names
+    
+    ez_init <- ezddm(mean(response == 2), var(rt[response == 2]), mean(rt[response == 2]), length(response))
+    
+    init_to_use[startsWith(par_names, "a[")] <- unname(ez_init["a"])
+    init_to_use[startsWith(par_names, "v[")] <- unname(ez_init["v"])
+    init_to_use[startsWith(par_names, "w[")] <- 0.5
+    init_to_use[startsWith(par_names, "t0[")] <- unname(min(0.99 * min(rt), ez_init["Ter"]))
+    
+    if (fit_sv) init_to_use[startsWith(par_names, "sv[")] <- 0
+    if (fit_sw) init_to_use[startsWith(par_names, "sw[")] <- 0
+    if (fit_st0) init_to_use[startsWith(par_names, "st0[")] <- 0
+    
+    if (!is.null(init_par)) {
+        overlap <- intersect(names(init_to_use), names(init_par))
+        init_to_use[overlap] <- init_par[overlap]
     }
+    
+    init_par <- init_to_use
     
     lower <- rep(-Inf, length(par_names))
     upper <- rep(Inf, length(par_names))
     
-    if (optim_method %in% c("L-BFGS-B", "nlminb")) {
-        lower[startsWith(par_names, "a[")] <- 0
-        lower[startsWith(par_names, "w[")] <- 0
-        lower[startsWith(par_names, "t0[")] <- 0
-        lower[startsWith(par_names, "sv[")] <- 0
-        lower[startsWith(par_names, "sw[")] <- 0
-        lower[startsWith(par_names, "st0[")] <- 0
-        
-        upper[startsWith(par_names, "w[")] <- 1
-        upper[startsWith(par_names, "t0[")] <- unname(tapply(rt, INDEX = resid_index, FUN = min))
-        upper[startsWith(par_names, "sw[")] <- 1
-    }
+    lower[startsWith(par_names, "a[")] <- 0
+    lower[startsWith(par_names, "w[")] <- 0
+    lower[startsWith(par_names, "t0[")] <- 0
+    lower[startsWith(par_names, "sv[")] <- 0
+    lower[startsWith(par_names, "sw[")] <- 0
+    lower[startsWith(par_names, "st0[")] <- 0
+    
+    upper[startsWith(par_names, "w[")] <- 1
+    upper[startsWith(par_names, "t0[")] <- unname(tapply(rt, INDEX = resid_index, FUN = min))
+    upper[startsWith(par_names, "sw[")] <- 1
     
     neg_log_likelihood <- function(par, rt, response, bound_index, drift_index, resid_index, ...) {
         a <- par[paste0("a[", bound_index, "]")]
@@ -106,7 +120,7 @@ fit_wienr <- function(rt, response, fit_sv = FALSE, fit_sw = FALSE, fit_st0 = FA
             st0 <- par[paste0("st0[", resid_index, "]")]
         }
         
-        eval_pdf <- try(WienerPDF(t = rt, response = response, a = a, v = v, w = w, t0 = t0, sv = sv, sw = sw, st0 = st0, ...))
+        eval_pdf <- try(WienerPDF(t = rt, response = response, a = a, v = v, w = w, t0 = t0, sv = sv, sw = sw, st0 = st0, ...), silent = TRUE)
         
         if (any(class(eval_pdf) == "try-error")) return(Inf)
         
@@ -143,16 +157,16 @@ fit_wienr <- function(rt, response, fit_sv = FALSE, fit_sw = FALSE, fit_st0 = FA
             use_st0 <- TRUE
         }
         
-        eval_grad <- try(gradWienerPDF(t = rt, response = response, a = a, v = v, w = w, t0 = t0, sv = sv, sw = sw, st0 = st0, ...))
+        eval_grad <- try(gradWienerPDF(t = rt, response = response, a = a, v = v, w = w, t0 = t0, sv = sv, sw = sw, st0 = st0, ...), silent = TRUE)
         
         if (any(class(eval_grad) == "try-error")) return(rep(NaN, length(par)))
         
-        eval_pdf <- try(WienerPDF(t = rt, response = response, a = a, v = v, w = w, t0 = t0, sv = sv, sw = sw, st0 = st0, ...))
+        eval_pdf <- try(WienerPDF(t = rt, response = response, a = a, v = v, w = w, t0 = t0, sv = sv, sw = sw, st0 = st0, ...), silent = TRUE)
         if (any(class(eval_pdf) == "try-error")) return(rep(NaN, length(par)))
         
         # Derivative of log(f(x)) is f'(x) / f(x)
         
-        grad <- rep(NA, length(par))
+        grad <- rep(NaN, length(par))
         names(grad) <- names(par)
         
         for (i in 1:max(bound_index)) {
@@ -174,50 +188,91 @@ fit_wienr <- function(rt, response, fit_sv = FALSE, fit_sw = FALSE, fit_st0 = FA
         return(-grad)
     }
     
-    if (optim_method == "ucminf") {
-        require(ucminf)
-        
-        fit <- ucminf(
-            par = init_par,
-            fn = neg_log_likelihood,
-            gr = gradient,
-            control = optim_control,
-            rt = rt,
-            response = response,
-            bound_index = bound_index,
-            drift_index = drift_index,
-            resid_index = resid_index
-        )
-    } else if (optim_method == "nlminb") {
-        fit <- nlminb(
-            start = init_par,
-            objective = neg_log_likelihood,
-            gradient = gradient,
-            control = optim_control,
-            lower = lower,
-            upper = upper,
-            rt = rt,
-            response = response,
-            bound_index = bound_index,
-            drift_index = drift_index,
-            resid_index = resid_index
-        )
+    fit1 <- optim(
+        par = init_par,
+        fn = neg_log_likelihood,
+        gr = gradient,
+        method = "Nelder-Mead",
+        control = c(optim_control, maxit = 10000),
+        rt = rt,
+        response = response,
+        bound_index = bound_index,
+        drift_index = drift_index,
+        resid_index = resid_index
+    )
+    
+    fit2 <- ucminf(
+        par = fit1$par,
+        fn = neg_log_likelihood,
+        gr = gradient,
+        control = optim_control,
+        rt = rt,
+        response = response,
+        bound_index = bound_index,
+        drift_index = drift_index,
+        resid_index = resid_index
+    )
+    
+    return(fit2)
+}
+
+qp_fit <- function(rt, response, par, rt_p = c(0.1, 0.3, 0.5, 0.7, 0.9), drift_index = NULL, bound_index = NULL, resid_index = NULL) {
+    par_names <- c()
+    
+    if (is.null(drift_index)) {
+        drift_index <- rep(1, length(rt))
+        n_drift <- 1
     } else {
-        fit <- optim(
-            par = init_par,
-            fn = neg_log_likelihood,
-            gr = gradient,
-            method = optim_method,
-            lower = lower,
-            upper = upper,
-            control = optim_control,
-            rt = rt,
-            response = response,
-            bound_index = bound_index,
-            drift_index = drift_index,
-            resid_index = resid_index
-        )
+        n_drift <- max(drift_index)
     }
     
-    return(fit)
+    if (is.null(bound_index)) {
+        bound_index <- rep(1, length(rt))
+        n_bound <- 1
+    } else {
+        n_bound <- max(bound_index)
+    }
+    
+    if (is.null(resid_index)) {
+        resid_index <- rep(1, length(rt))
+        n_resid <- 1
+    } else {
+        n_resid <- max(resid_index)
+    }
+    
+    par_names <- c(paste0("a[", 1:n_bound, "]"), paste0("v[", 1:n_drift, "]"), paste0("w[", 1:n_bound, "]"), paste0("t0[", 1:n_resid, "]"), paste0("sv[", 1:n_drift, "]"), paste0("sw[", 1:n_bound, "]"), paste0("st0[", 1:n_resid, "]"))
+    
+    par_to_use <- rep(0, length(par_names))
+    names(par_to_use) <- par_names
+    overlap <- intersect(names(par_to_use), names(par))
+    par_to_use[overlap] <- par[overlap]
+        
+    obs_rt_quantiles <- tibble(rt = rt, response = response, drift_index = drift_index, bound_index = bound_index, resid_index = resid_index) %>%
+        group_by(drift_index, bound_index, resid_index, response) %>%
+        reframe(rt_q = quantile(rt, probs = rt_p)) %>%
+        mutate(rt_p = rep(rt_p, n() / length(rt_p))) %>%
+        complete(nesting(drift_index, bound_index, resid_index), response, rt_p, fill = list(rt_q = NA))
+    
+    obs_p_resp <- tibble(rt = rt, response = response, drift_index = drift_index, bound_index = bound_index, resid_index = resid_index) %>%
+        group_by(drift_index, bound_index, resid_index, response) %>%
+        summarize(n_resp = n(), .groups = "keep") %>%
+        ungroup() %>%
+        complete(nesting(drift_index, bound_index, resid_index), response, fill = list(n_resp = 0)) %>%
+        group_by(drift_index, bound_index, resid_index) %>%
+        mutate(p_resp = n_resp / sum(n_resp))
+    
+    fitDF <- expand_grid(nesting(drift_index, bound_index, resid_index), response = c("upper", "lower"), rt_p = rt_p) %>% mutate(rt_q = NA, p_resp = NA)
+    
+    for (i in 1:nrow(fitDF)) {
+        fitDF$rt_q[i] <- qWDM(p = fitDF$rt_p[i], response = fitDF$response[i], a = par_to_use[paste0("a[", fitDF$bound_index[i], "]")], v = par_to_use[paste0("v[", fitDF$drift_index[i], "]")], w = par_to_use[paste0("w[", fitDF$bound_index[i], "]")], t0 = par_to_use[paste0("t0[", fitDF$resid_index[i], "]")], sv = par_to_use[paste0("sv[", fitDF$drift_index[i], "]")], sw = par_to_use[paste0("sw[", fitDF$bound_index[i], "]")], st0 = par_to_use[paste0("st0[", fitDF$resid_index[i], "]")])
+        
+        fitDF$p_resp[i] <- WienerCDF(t = Inf, response = fitDF$response[i], a = par_to_use[paste0("a[", fitDF$bound_index[i], "]")], v = par_to_use[paste0("v[", fitDF$drift_index[i], "]")], w = par_to_use[paste0("w[", fitDF$bound_index[i], "]")], t0 = par_to_use[paste0("t0[", fitDF$resid_index[i], "]")], sv = par_to_use[paste0("sv[", fitDF$drift_index[i], "]")], sw = par_to_use[paste0("sw[", fitDF$bound_index[i], "]")], st0 = par_to_use[paste0("st0[", fitDF$resid_index[i], "]")])$value
+    }
+    
+    obs_fit_data <- full_join(
+        full_join(obs_p_resp, obs_rt_quantiles) %>% mutate(source = "Observed"),
+        fitDF %>% mutate(source = "Fitted")
+    )
+    
+    return(obs_fit_data)
 }

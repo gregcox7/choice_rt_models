@@ -12,6 +12,8 @@ book:
     - history.qmd
     - random_walk.qmd
     - diffusion_sim.qmd
+    - diffusion_fit.qmd
+    - blast_example.qmd
     - references.qmd
 
 bibliography: references.bib

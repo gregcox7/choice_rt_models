@@ -19,16 +19,6 @@ nsim <- 20
 
 rt_p <- c(0.1, 0.3, 0.5, 0.7, 0.9)
 
-qWDM <- function(p, response, ...) {
-    p_resp <- WienerCDF(Inf, response = response, ...)$value
-    
-    res <- try(uniroot(f = function(t) WienerCDF(t, response = response, ...)$value / p_resp - p, interval = c(0, 5), f.lower = -p, extendInt = "upX"))
-    
-    if (class(res) == "try-error") return(NA)
-    
-    return(res$root)
-}
-
 source("wienr_fit_utils.r")
 
 # Define UI for application that draws a histogram
@@ -97,19 +87,18 @@ server <- function(input, output) {
     })
     
     manual_fit <- reactive({
-        manual_par <- c("v" = unname(input$v_fit), "a" = unname(input$a_fit), "w" = unname(input$w_fit), "t0" = unname(input$t0_fit), "sv" = unname(input$sv_fit), "sw" = unname(input$sw_fit), "st0" = unname(input$st0_fit))
+        manual_par <- c("v[1]" = unname(input$v_fit), "a[1]" = unname(input$a_fit), "w[1]" = unname(input$w_fit), "t0[1]" = unname(input$t0_fit), "sv[1]" = unname(input$sv_fit), "sw[1]" = unname(input$sw_fit), "st0[1]" = unname(input$st0_fit))
         
-        fit0 <- fit_wienr(rt = sim()$sim_data$q, response = (sim()$sim_data$response == "upper") + 1, fit_sv = TRUE, fit_sw = TRUE, fit_st0 = TRUE, optim_control = list(maxit = 0), optim_method = "Nelder-Mead", init_par = manual_par)
-        nll <- fit0$value
+        nll <- -sum(WienerPDF(t = sim()$sim_data$q, response = (sim()$sim_data$response == "upper") + 1, a = input$a_fit, v = input$v_fit, w = input$w_fit, t0 = input$t0_fit, sv = input$sv_fit, sw = input$sw_fit, st0 = input$st0_fit)$logvalue)
         
         fitDF <- expand_grid(response = c("upper", "lower"), rt_p = rt_p) %>% mutate(rt_q = NA, p_resp = NA)
         
         for (i in 1:nrow(fitDF)) {
-            fitDF$rt_q[i] <- qWDM(p = fitDF$rt_p[i], response = fitDF$response[i], a = manual_par["a"], v = manual_par["v"], w = manual_par["w"], t0 = manual_par["t0"], sv = manual_par["sv"], sw = manual_par["sw"], st0 = manual_par["st0"])
+            fitDF$rt_q[i] <- qWDM(p = fitDF$rt_p[i], response = fitDF$response[i], a = manual_par["a[1]"], v = manual_par["v[1]"], w = manual_par["w[1]"], t0 = manual_par["t0[1]"], sv = manual_par["sv[1]"], sw = manual_par["sw[1]"], st0 = manual_par["st0[1]"])
         }
         
-        fitDF$p_resp[fitDF$response == "upper"] <- WienerCDF(t = Inf, response = "upper", a = manual_par["a"], v = manual_par["v"], w = manual_par["w"], t0 = manual_par["t0"], sv = manual_par["sv"], sw = manual_par["sw"], st0 = manual_par["st0"])$value
-        fitDF$p_resp[fitDF$response == "lower"] <- WienerCDF(t = Inf, response = "lower", a = manual_par["a"], v = manual_par["v"], w = manual_par["w"], t0 = manual_par["t0"], sv = manual_par["sv"], sw = manual_par["sw"], st0 = manual_par["st0"])$value
+        fitDF$p_resp[fitDF$response == "upper"] <- WienerCDF(t = Inf, response = "upper", a = manual_par["a[1]"], v = manual_par["v[1]"], w = manual_par["w[1]"], t0 = manual_par["t0[1]"], sv = manual_par["sv[1]"], sw = manual_par["sw[1]"], st0 = manual_par["st0[1]"])$value
+        fitDF$p_resp[fitDF$response == "lower"] <- WienerCDF(t = Inf, response = "lower", a = manual_par["a[1]"], v = manual_par["v[1]"], w = manual_par["w[1]"], t0 = manual_par["t0[1]"], sv = manual_par["sv[1]"], sw = manual_par["sw[1]"], st0 = manual_par["st0[1]"])$value
         
         sim_fit_data <- full_join(
             full_join(sim()$sim_p_resp, sim()$sim_rt_quantiles) %>% mutate(source = "Simulated"),
@@ -120,28 +109,28 @@ server <- function(input, output) {
     })
     
     recov_fit <- reactive({
-        init_par <- c("v" = unname(input$v), "a" = unname(input$a), "w" = unname(input$w), "t0" = unname(input$t0))
-        if (input$sv > 0) init_par <- c(init_par, "sv" = unname(input$sv))
-        if (input$sw > 0) init_par <- c(init_par, "sw" = unname(input$sw))
-        if (input$st0 > 0) init_par <- c(init_par, "st0" = unname(input$st0))
+        init_par <- c("v[1]" = unname(input$v), "a[1]" = unname(input$a), "w[1]" = unname(input$w), "t0[1]" = unname(input$t0))
+        if (input$sv > 0) init_par <- c(init_par, "sv[1]" = unname(input$sv))
+        if (input$sw > 0) init_par <- c(init_par, "sw[1]" = unname(input$sw))
+        if (input$st0 > 0) init_par <- c(init_par, "st0[1]" = unname(input$st0))
         
-        fit <- fit_wienr(rt = sim()$sim_data$q, response = (sim()$sim_data$response == "upper") + 1, fit_sv = (input$sv > 0), fit_sw = (input$sw > 0), fit_st0 = (input$st0 > 0), optim_control = list(maxit = 10000), optim_method = "Nelder-Mead", init_par = init_par)
+        fit <- fit_wienr(rt = sim()$sim_data$q, response = (sim()$sim_data$response == "upper") + 1, fit_sv = (input$sv > 0), fit_sw = (input$sw > 0), fit_st0 = (input$st0 > 0), init_par = init_par)
         
         nll <- fit$value
         fit_pars <- fit$par
         
-        if (input$sv <= 0) fit_pars <- c(fit_pars, "sv" = 0)
-        if (input$sw <= 0) fit_pars <- c(fit_pars, "sw" = 0)
-        if (input$st0 <= 0) fit_pars <- c(fit_pars, "st0" = 0)
+        if (input$sv <= 0) fit_pars <- c(fit_pars, "sv[1]" = 0)
+        if (input$sw <= 0) fit_pars <- c(fit_pars, "sw[1]" = 0)
+        if (input$st0 <= 0) fit_pars <- c(fit_pars, "st0[1]" = 0)
         
         fitDF <- expand_grid(response = c("upper", "lower"), rt_p = rt_p) %>% mutate(rt_q = NA, p_resp = NA)
         
         for (i in 1:nrow(fitDF)) {
-            fitDF$rt_q[i] <- qWDM(p = fitDF$rt_p[i], response = fitDF$response[i], a = fit_pars["a"], v = fit_pars["v"], w = fit_pars["w"], t0 = fit_pars["t0"], sv = fit_pars["sv"], sw = fit_pars["sw"], st0 = fit_pars["st0"])
+            fitDF$rt_q[i] <- qWDM(p = fitDF$rt_p[i], response = fitDF$response[i], a = fit_pars["a[1]"], v = fit_pars["v[1]"], w = fit_pars["w[1]"], t0 = fit_pars["t0[1]"], sv = fit_pars["sv[1]"], sw = fit_pars["sw[1]"], st0 = fit_pars["st0[1]"])
         }
         
-        fitDF$p_resp[fitDF$response == "upper"] <- WienerCDF(t = Inf, response = "upper", a = fit_pars["a"], v = fit_pars["v"], w = fit_pars["w"], t0 = fit_pars["t0"], sv = fit_pars["sv"], sw = fit_pars["sw"], st0 = fit_pars["st0"])$value
-        fitDF$p_resp[fitDF$response == "lower"] <- WienerCDF(t = Inf, response = "lower", a = fit_pars["a"], v = fit_pars["v"], w = fit_pars["w"], t0 = fit_pars["t0"], sv = fit_pars["sv"], sw = fit_pars["sw"], st0 = fit_pars["st0"])$value
+        fitDF$p_resp[fitDF$response == "upper"] <- WienerCDF(t = Inf, response = "upper", a = fit_pars["a[1]"], v = fit_pars["v[1]"], w = fit_pars["w[1]"], t0 = fit_pars["t0[1]"], sv = fit_pars["sv[1]"], sw = fit_pars["sw[1]"], st0 = fit_pars["st0[1]"])$value
+        fitDF$p_resp[fitDF$response == "lower"] <- WienerCDF(t = Inf, response = "lower", a = fit_pars["a[1]"], v = fit_pars["v[1]"], w = fit_pars["w[1]"], t0 = fit_pars["t0[1]"], sv = fit_pars["sv[1]"], sw = fit_pars["sw[1]"], st0 = fit_pars["st0[1]"])$value
         
         sim_fit_data <- full_join(
             full_join(sim()$sim_p_resp, sim()$sim_rt_quantiles) %>% mutate(source = "Simulated"),
@@ -150,7 +139,7 @@ server <- function(input, output) {
         
         par_mat <- cbind(
             c(input$v, input$a, input$w, input$t0, input$sv, input$sw, input$st0),
-            fit_pars[c("v", "a", "w", "t0", "sv", "sw", "st0")]
+            fit_pars[c("v[1]", "a[1]", "w[1]", "t0[1]", "sv[1]", "sw[1]", "st0[1]")]
         )
         
         rownames(par_mat) <- c("v", "a", "w", "t0", "sv", "sw", "st0")

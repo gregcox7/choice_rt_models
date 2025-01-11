@@ -84,7 +84,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./diffusion_fit.html" rel="next">
 <link href="./random_walk.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -217,6 +217,18 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="./diffusion_sim.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">From random walk to diffusion</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./diffusion_fit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitting a diffusion model to data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./blast_example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">A worked example</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -987,6 +999,7 @@ B_{\text{Lower}} &amp; = -\left(1 - w \right) A \\
 </section>
 <section id="shiny-app" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="shiny-app"><span class="header-section-number">4.4</span> Shiny App</h2>
+<p>To have a good deal of fun exploring how the different parameters of a diffusion model influence its predicted choice and RT distributions, download <a href="https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/DiffusionModel/app.R">this Shiny app</a> and run it from RStudio. You will also need to download <a href="https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/DiffusionModel/wienr_fit_utils.r">this R script</a> into the same directory as the Shiny app. The Shiny app has some additional functionality that we will see more of in the next chapter.</p>
 </section>
 <section id="exercises" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="exercises"><span class="header-section-number">4.5</span> Exercises</h2>
@@ -1435,8 +1448,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./diffusion_fit.html" class="pagination-link" aria-label="Fitting a diffusion model to data">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitting a diffusion model to data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

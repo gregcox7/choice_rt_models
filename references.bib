@@ -62,6 +62,59 @@
   publisher={Appleton-Century-Crofts}
 }
 
+@Article{Tuerlincx2004,
+  author = 	{Francis Tuerlincx},
+  title = 	{The efficient computation of the cumulative distribution and probability density functions in the diffusion model},
+  year = 	2004,
+  journal = 	{Behavior Research Methods, Instruments, \& Computers},
+  volume = 	36,
+  number = 	4,
+  pages = 	{702--716}
+}
+
+@article{BlurtonEtAl2012,
+title = {Fast and accurate calculations for cumulative first-passage time distributions in Wiener diffusion models},
+journal = {Journal of Mathematical Psychology},
+volume = {56},
+number = {6},
+pages = {470-475},
+year = {2012},
+issn = {0022-2496},
+doi = {https://doi.org/10.1016/j.jmp.2012.09.002},
+url = {https://www.sciencedirect.com/science/article/pii/S0022249612001009},
+author = {Steven P. Blurton and Miriam Kesselmeier and Matthias Gondan},
+keywords = {Diffusion model, Wiener process, First passage times, Response times},
+abstract = {We propose an improved method for calculating the cumulative first-passage time distribution in Wiener diffusion models with two absorbing barriers. This distribution function is frequently used to describe responses and error probabilities in choice reaction time tasks. The present work extends related work on the density of first-passage times [Navarro, D.J., Fuss, I.G. (2009). Fast and accurate calculations for first-passage times in Wiener diffusion models. Journal of Mathematical Psychology, 53, 222–230]. Two representations exist for the distribution, both including infinite series. We derive upper bounds for the approximation error resulting from finite truncation of the series, and we determine the number of iterations required to limit the error below a pre-specified tolerance. For a given set of parameters, the representation can then be chosen which requires the least computational effort.}
+}
+
+@article{GondanEtAl2014,
+title = {Even faster and even more accurate first-passage time densities and distributions for the Wiener diffusion model},
+journal = {Journal of Mathematical Psychology},
+volume = {60},
+pages = {20-22},
+year = {2014},
+issn = {0022-2496},
+doi = {https://doi.org/10.1016/j.jmp.2014.05.002},
+url = {https://www.sciencedirect.com/science/article/pii/S0022249614000388},
+author = {Matthias Gondan and Steven P. Blurton and Miriam Kesselmeier},
+keywords = {Diffusion model, Wiener process, First passage times, Response times},
+abstract = {The Wiener diffusion model with two absorbing barriers is often used to describe response times and error probabilities in two-choice decisions. Different representations exist for the density and cumulative distribution of first-passage times, all including infinite series, but with different convergence for small and large times. We present a method that controls the approximation error of the small-time representation that occurs due to finite truncation of these series. Our approach improves and simplifies related work by Navarro and Fuss (2009) and Blurton et al. (2012, both in the Journal of Mathematical Psychology).}
+}
+
+@article{HartmannKlauer2021,
+title = {Partial derivatives for the first-passage time distribution in Wiener diffusion models},
+journal = {Journal of Mathematical Psychology},
+volume = {103},
+pages = {102550},
+year = {2021},
+issn = {0022-2496},
+doi = {https://doi.org/10.1016/j.jmp.2021.102550},
+url = {https://www.sciencedirect.com/science/article/pii/S0022249621000365},
+author = {Raphael Hartmann and Karl Christoph Klauer},
+keywords = {Wiener diffusion model, PDF, CDF, Partial derivatives, Error bounds, Error approximation},
+abstract = {The Wiener diffusion model with two absorbing barriers is frequently used in modeling decisions and decision latencies jointly. We derive representations of the partial derivatives of the density and cumulative distribution function of first-passage times. Different representations, based on infinite series, differ in convergence for small and large times, and we provide methods that control the approximation errors. These methods and their implementation in an R package are helpful whenever gradient information is required as is the case in many frequentist and Bayesian approaches to modeling.}
+}
+
 @article{Broadbent1957,
   title={A mechanical model for human attention and immediate memory},
   author={Broadbent, Donald Eric},
@@ -80,6 +133,31 @@
   address = 	{Berlin},
   publisher = 	{Springer},
   pages = 	{1--198}
+}
+
+@Manual{WienR,
+    title = {WienR: Derivatives of the First-Passage Time Density and Cumulative
+Distribution Function, and Random Sampling from the (Truncated)
+First-Passage Time Distribution},
+    author = {Raphael Hartmann and Karl C. Klauer},
+    year = {2023},
+    note = {R package version 0.3-15},
+    url = {https://CRAN.R-project.org/package=WienR},
+  }
+
+@article{NavarroFuss2009,
+title = {Fast and accurate calculations for first-passage times in Wiener diffusion models},
+journal = {Journal of Mathematical Psychology},
+volume = {53},
+number = {4},
+pages = {222-230},
+year = {2009},
+issn = {0022-2496},
+doi = {https://doi.org/10.1016/j.jmp.2009.02.003},
+url = {https://www.sciencedirect.com/science/article/pii/S0022249609000200},
+author = {Daniel J. Navarro and Ian G. Fuss},
+keywords = {Diffusion model, Wiener processes, First passage times, Response time},
+abstract = {We propose a new method for quickly calculating the probability density function for first-passage times in simple Wiener diffusion models, extending an earlier method used by [Van Zandt, T., Colonius, H., & Proctor, R. W. (2000). A comparison of two response-time models applied to perceptual matching. Psychonomic Bulletin & Review, 7, 208–256]. The method relies on the observation that there are two distinct infinite series expansions of this probability density, one of which converges quickly for small time values, while the other converges quickly at large time values. By deriving error bounds associated with finite truncation of either expansion, we are able to determine analytically which of the two versions should be applied in any particular context. The bounds indicate that, even for extremely stringent error tolerances, no more than 8 terms are required to calculate the probability density. By making the calculation of this distribution tractable, the goal is to allow more complex extensions of Wiener diffusion models to be developed.}
 }
 
 @Book{Anderson1990,
@@ -411,6 +489,38 @@
   volume = 	31,
   number = 	6,
   pages = 	{1199--1212}
+}
+
+@article{Akaike1974,
+abstract = {The history of the development of statistical hypothesis testing in time series analysis is reviewed briefly and it is pointed out that the hypothesis testing procedure is not adequately defined as the procedure for statistical model identification. The classical maximum likelihood estimation procedure is reviewed and a new estimate minimum information theoretical criterion (AIC) estimate (MAICE) which is designed for the purpose of statistical identification is introduced. When there are several competing models the MAICE is defined by the model and the maximum likelihood estimates of the parameters which give the minimum of AIC defined by AIC = (-2)log-(maximum likelihood) + 2(number of independently adjusted parameters within the model). MAICE provides a versatile procedure for statistical model identification which is free from the ambiguities inherent in the application of conventional hypothesis testing procedure. The practical utility of MAICE in time series analysis is demonstrated with some numerical examples.},
+author = {Akaike, Hirotugu},
+journal = {IEEE Transactions on Automatic Control},
+number = {6},
+pages = {716--723},
+pmid = {1100705},
+title = {A new look at the statistical model identification},
+volume = {19},
+year = {1974}
+}
+
+@article{TruebloodEtAl2018,
+  title={The impact of speed and bias on the cognitive processes of experts and novices in medical image decision-making},
+  author={Trueblood, Jennifer S and Holmes, William R and Seegmiller, Adam C and Douds, Jonathan and Compton, Margaret and Szentirmai, Eszter and Woodruff, Megan and Huang, Wenrui and Stratton, Charles and Eichbaum, Quentin},
+  journal={Cognitive Research: Principles and Implications},
+  volume={3},
+  pages={1--14},
+  year={2018},
+  publisher={Springer}
+}
+
+@article{Schwarz1978,
+author = {Schwarz, Gideon},
+journal = {The Annals of Statistics},
+number = {2},
+pages = {461--464},
+title = {Estimating the Dimension of a Model},
+volume = {6},
+year = {1978}
 }
 
 @Article{DayanEtAl2000,
