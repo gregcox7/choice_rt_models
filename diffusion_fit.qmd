@@ -440,7 +440,7 @@ Once again, the two-drift model gets the lower---and therefore better---score.
 
 ## Shiny App
 
-The "Manual parameter fitting" tab of the [Shiny app from the previous chapter](https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/DiffusionModel/app.R) allows you to try searching for optimal parameters yourself.  You will find how difficult it is to do by hand!  There is also a "Parameter recovery" tab that replicates what we did in this chapter, namely, using the diffusion model to simulate data and then fitting the diffusion model to the simulated data.  Finally, note that the App allows you to play around with other parameters, like the trial-by-trial variability parameters, that we did not use in this chapter.
+The "Manual parameter fitting" tab of the [Shiny app from the previous chapter](https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/diffusion_shiny_app.r) allows you to try searching for optimal parameters yourself.  You will find how difficult it is to do by hand!  There is also a "Parameter recovery" tab that replicates what we did in this chapter, namely, using the diffusion model to simulate data and then fitting the diffusion model to the simulated data.  Finally, note that the App allows you to play around with other parameters, like the trial-by-trial variability parameters, that we did not use in this chapter.
 
 ```{r}
 #| code-fold: show

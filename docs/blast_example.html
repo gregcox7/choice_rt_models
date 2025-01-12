@@ -213,14 +213,8 @@ div.csl-indent {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link active" data-scroll-target="#exercises"><span class="header-section-number">6.1</span> Exercises</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -293,174 +287,113 @@ $ nomt             &lt;dbl&gt; 0.9166667, 0.9166667, 0.9166667, 0.9166667, 0.916
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>blast_data_cond <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(group <span class="sc">==</span> <span class="st">"Inexperienced"</span>, subject <span class="sc">==</span> <span class="st">"M003"</span>, blockType <span class="sc">==</span> <span class="st">"Accuracy"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>blast_data <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">drift_index =</span> <span class="fu">as.numeric</span>(<span class="fu">interaction</span>(difficulty, correct_response, <span class="at">drop =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">bound_index =</span> <span class="fu">as.numeric</span>(blockType),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">resid_index =</span> <span class="fu">as.numeric</span>(blockType),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">sv_index =</span> <span class="dv">1</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">st0_index =</span> <span class="dv">1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>blast_data_subj <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(group <span class="sc">==</span> <span class="st">"Inexperienced"</span>, subject <span class="sc">==</span> <span class="st">"M003"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_model_nosv <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(<span class="at">rt =</span> blast_data_cond<span class="sc">$</span>rt, <span class="at">response =</span> (blast_data_cond<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">fit_sv =</span> F, <span class="at">fit_sw =</span> F, <span class="at">fit_st0 =</span> F, <span class="at">optim_control =</span> <span class="fu">list</span>(<span class="at">trace =</span> <span class="dv">1</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit_model_wsv <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(<span class="at">rt =</span> blast_data_cond<span class="sc">$</span>rt, <span class="at">response =</span> (blast_data_cond<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">fit_sv =</span> T, <span class="at">fit_sw =</span> F, <span class="at">fit_st0 =</span> F, <span class="at">optim_control =</span> <span class="fu">list</span>(<span class="at">trace =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>to_fit <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">fit_sv =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">fit_sw =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">fit_st0 =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">nll =</span> <span class="cn">NA</span>, <span class="at">np =</span> <span class="cn">NA</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fits <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(to_fit)) {</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    fits[[i]] <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(<span class="at">rt =</span> blast_data_cond<span class="sc">$</span>rt, <span class="at">response =</span> (blast_data_cond<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>, <span class="at">fit_sv =</span> to_fit<span class="sc">$</span>fit_sv[i], <span class="at">fit_sw =</span> to_fit<span class="sc">$</span>fit_sw[i], <span class="at">fit_st0 =</span> to_fit<span class="sc">$</span>fit_st0[i], <span class="at">optim_control =</span> <span class="fu">list</span>(<span class="at">trace =</span> <span class="dv">1</span>))</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    to_fit<span class="sc">$</span>nll[i] <span class="ot">&lt;-</span> fits[[i]]<span class="sc">$</span>value</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    to_fit<span class="sc">$</span>np[i] <span class="ot">&lt;-</span> <span class="fu">length</span>(fits[[i]]<span class="sc">$</span>par)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    to_fit<span class="sc">$</span>nobs[i] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(blast_data_cond)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>to_fit <span class="sc">%&gt;%</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">nobs =</span> <span class="fu">nrow</span>(blast_data_cond)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">aic =</span> <span class="dv">2</span> <span class="sc">*</span> nll <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> np, <span class="at">bic =</span> <span class="dv">2</span> <span class="sc">*</span> nll <span class="sc">+</span> <span class="fu">log</span>(nobs) <span class="sc">*</span> np) <span class="sc">%&gt;%</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">daic =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> (aic <span class="sc">-</span> <span class="fu">min</span>(aic))), <span class="at">dbic =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> (bic <span class="sc">-</span> <span class="fu">min</span>(bic)))) <span class="sc">%&gt;%</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">waic =</span> daic <span class="sc">/</span> <span class="fu">sum</span>(daic), <span class="at">wbic =</span> dbic <span class="sc">/</span> <span class="fu">sum</span>(dbic))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_subj <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">rt =</span> blast_data_subj<span class="sc">$</span>rt,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">response =</span> (blast_data_subj<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fit_sv =</span> T, <span class="at">fit_sw =</span> F, <span class="at">fit_st0 =</span> T,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># optim_control = list(trace = 1),</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">drift_index =</span> blast_data_subj<span class="sc">$</span>drift_index,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">bound_index =</span> blast_data_subj<span class="sc">$</span>bound_index,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">resid_index =</span> blast_data_subj<span class="sc">$</span>resid_index,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sv_index =</span> blast_data_subj<span class="sc">$</span>sv_index,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">st0_index =</span> blast_data_subj<span class="sc">$</span>st0_index</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelr)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>to_fit <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data_grid</span>(<span class="fu">nesting</span>(group, subject), blockType)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>model_pars <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>model_pred <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>pb <span class="ot">&lt;-</span> <span class="fu">txtProgressBar</span>(<span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fu">nrow</span>(to_fit), <span class="at">initial =</span> <span class="dv">0</span>, <span class="at">style =</span> <span class="dv">3</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (fit_index <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(to_fit)) {</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    this_subj_data <span class="ot">&lt;-</span> <span class="fu">semi_join</span>(blast_data, to_fit[fit_index,]) <span class="sc">%&gt;%</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">drift_index =</span> <span class="fu">as.numeric</span>(<span class="fu">interaction</span>(difficulty, correct_response))</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    this_fit_init <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">rt =</span> this_subj_data<span class="sc">$</span>rt,</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">response =</span> (this_subj_data<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>,</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">fit_sv =</span> F,</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">fit_sw =</span> F,</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">fit_st0 =</span> F,</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">optim_control =</span> <span class="fu">list</span>(<span class="at">trace =</span> <span class="dv">1</span>),</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">drift_index =</span> this_subj_data<span class="sc">$</span>drift_index</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    this_fit <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">rt =</span> this_subj_data<span class="sc">$</span>rt,</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">response =</span> (this_subj_data<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>,</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">fit_sv =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">fit_sw =</span> F,</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">fit_st0 =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">init_par =</span> this_fit_init<span class="sc">$</span>par,</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">optim_control =</span> <span class="fu">list</span>(<span class="at">trace =</span> <span class="dv">1</span>),</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">drift_index =</span> this_subj_data<span class="sc">$</span>drift_index</span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    this_ddm_pars <span class="ot">&lt;-</span> <span class="fu">coef</span>(this_ddm_fit, <span class="at">dpar =</span> <span class="st">"full"</span>)</span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    ddm_pars <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        ddm_pars,</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cbind</span>(to_fit[fit_index,], <span class="fu">tibble</span>(<span class="at">par_name =</span> <span class="fu">names</span>(this_ddm_pars), <span class="at">val =</span> this_ddm_pars) <span class="sc">%&gt;%</span> <span class="fu">extract</span>(par_name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"coef"</span>, <span class="st">"dpar"</span>), <span class="at">regex =</span> <span class="st">"(.+) </span><span class="sc">\\</span><span class="st">((.+)</span><span class="sc">\\</span><span class="st">)"</span>))</span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    this_pred_pars <span class="ot">&lt;-</span> this_subj_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">rownum =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(this_subj_data)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>        <span class="fu">group_by</span>(blockType, difficulty, correct_response) <span class="sc">%&gt;%</span></span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">i =</span> <span class="fu">first</span>(rownum), <span class="at">.groups =</span> <span class="st">"keep"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">a =</span> <span class="fu">c</span>(this_ddm_fit<span class="sc">$</span>mmatrix<span class="sc">$</span>boundary[i,] <span class="sc">%*%</span> <span class="fu">as.matrix</span>(this_ddm_fit<span class="sc">$</span>coefficients<span class="sc">$</span>boundary))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">v =</span> <span class="fu">c</span>(this_ddm_fit<span class="sc">$</span>mmatrix<span class="sc">$</span>drift[i,] <span class="sc">%*%</span> <span class="fu">as.matrix</span>(this_ddm_fit<span class="sc">$</span>coefficients<span class="sc">$</span>drift))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">t0 =</span> <span class="fu">c</span>(this_ddm_fit<span class="sc">$</span>mmatrix<span class="sc">$</span>ndt[i,] <span class="sc">%*%</span> <span class="fu">as.matrix</span>(this_ddm_fit<span class="sc">$</span>coefficients<span class="sc">$</span>ndt))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">bias =</span> <span class="fu">c</span>(this_ddm_fit<span class="sc">$</span>mmatrix<span class="sc">$</span>bias[i,] <span class="sc">%*%</span> <span class="fu">as.matrix</span>(this_ddm_fit<span class="sc">$</span>coefficients<span class="sc">$</span>bias))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">sv =</span> <span class="fu">c</span>(this_ddm_fit<span class="sc">$</span>mmatrix<span class="sc">$</span>sv[i,] <span class="sc">%*%</span> <span class="fu">as.matrix</span>(this_ddm_fit<span class="sc">$</span>coefficients<span class="sc">$</span>sv))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># mutate(sv = 0) %&gt;%</span></span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">z =</span> bias <span class="sc">*</span> a)</span>
-<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>    this_pred_data <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
-<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(this_pred_pars)) {</span>
-<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>        p_resp_upper <span class="ot">&lt;-</span> <span class="fu">pdiffusion</span>(<span class="at">rt =</span> <span class="dv">5</span>, <span class="at">response =</span> <span class="st">"upper"</span>, <span class="at">a =</span> this_pred_pars<span class="sc">$</span>a[i], <span class="at">v =</span> this_pred_pars<span class="sc">$</span>v[i], <span class="at">t0 =</span> this_pred_pars<span class="sc">$</span>t0[i], <span class="at">z =</span> this_pred_pars<span class="sc">$</span>z[i], <span class="at">sv =</span> this_pred_pars<span class="sc">$</span>sv[i], <span class="at">maxt =</span> <span class="dv">5</span>)</span>
-<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>        p_resp_lower <span class="ot">&lt;-</span> <span class="fu">pdiffusion</span>(<span class="at">rt =</span> <span class="dv">5</span>, <span class="at">response =</span> <span class="st">"lower"</span>, <span class="at">a =</span> this_pred_pars<span class="sc">$</span>a[i], <span class="at">v =</span> this_pred_pars<span class="sc">$</span>v[i], <span class="at">t0 =</span> this_pred_pars<span class="sc">$</span>t0[i], <span class="at">z =</span> this_pred_pars<span class="sc">$</span>z[i], <span class="at">sv =</span> this_pred_pars<span class="sc">$</span>sv[i], <span class="at">maxt =</span> <span class="dv">5</span>)</span>
-<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>        upper_q <span class="ot">&lt;-</span> <span class="fu">qdiffusion</span>(<span class="at">p =</span> rt_quantiles, <span class="at">response =</span> <span class="st">"upper"</span>, <span class="at">a =</span> this_pred_pars<span class="sc">$</span>a[i], <span class="at">v =</span> this_pred_pars<span class="sc">$</span>v[i], <span class="at">t0 =</span> this_pred_pars<span class="sc">$</span>t0[i], <span class="at">z =</span> this_pred_pars<span class="sc">$</span>z[i], <span class="at">sv =</span> this_pred_pars<span class="sc">$</span>sv[i], <span class="at">scale_p =</span> <span class="cn">TRUE</span>, <span class="at">maxt =</span> <span class="dv">5</span>, <span class="at">interval =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
-<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>        lower_q <span class="ot">&lt;-</span> <span class="fu">qdiffusion</span>(<span class="at">p =</span> rt_quantiles, <span class="at">response =</span> <span class="st">"lower"</span>, <span class="at">a =</span> this_pred_pars<span class="sc">$</span>a[i], <span class="at">v =</span> this_pred_pars<span class="sc">$</span>v[i], <span class="at">t0 =</span> this_pred_pars<span class="sc">$</span>t0[i], <span class="at">z =</span> this_pred_pars<span class="sc">$</span>z[i], <span class="at">sv =</span> this_pred_pars<span class="sc">$</span>sv[i], <span class="at">scale_p =</span> <span class="cn">TRUE</span>, <span class="at">maxt =</span> <span class="dv">5</span>, <span class="at">interval =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
-<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>        this_pred_data <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>            this_pred_data,</span>
-<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>            <span class="fu">cbind</span>(this_pred_pars[i,], <span class="fu">tibble</span>(<span class="at">response =</span> <span class="st">"Blast"</span>, <span class="at">p_resp =</span> p_resp_upper <span class="sc">/</span> (p_resp_upper <span class="sc">+</span> p_resp_lower), <span class="at">rt_p =</span> rt_quantiles, <span class="at">rt_q =</span> upper_q)),</span>
-<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>            <span class="fu">cbind</span>(this_pred_pars[i,], <span class="fu">tibble</span>(<span class="at">response =</span> <span class="st">"Non-blast"</span>, <span class="at">p_resp =</span> p_resp_lower <span class="sc">/</span> (p_resp_upper <span class="sc">+</span> p_resp_lower), <span class="at">rt_p =</span> rt_quantiles, <span class="at">rt_q =</span> lower_q))</span>
-<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>    ddm_pred <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>        ddm_pred,</span>
-<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cbind</span>(to_fit[fit_index,], this_pred_data)</span>
-<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setTxtProgressBar</span>(pb, fit_index)</span>
-<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="fu">close</span>(pb)</span>
-<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>ddm_pars <span class="sc">%&gt;%</span></span>
-<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> coef, <span class="at">y =</span> val, <span class="at">color =</span> group, <span class="at">shape =</span> group)) <span class="sc">+</span></span>
-<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.width =</span> <span class="fl">0.1</span>, <span class="at">dodge.width =</span> <span class="fl">0.4</span>), <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">geom =</span> <span class="st">"pointrange"</span>, <span class="at">fun.data =</span> mean_cl_boot, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.4</span>)) <span class="sc">+</span></span>
-<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="st">"dpar"</span>, <span class="at">scales =</span> <span class="st">"free"</span>)</span>
-<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a>obs_rt_quantiles <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, subject, blockType, difficulty, correct_response, response) <span class="sc">%&gt;%</span></span>
-<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>    <span class="fu">reframe</span>(<span class="at">rt_q =</span> <span class="fu">quantile</span>(rt, <span class="at">probs =</span> rt_quantiles)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rt_p =</span> <span class="fu">rep</span>(rt_quantiles, <span class="fu">n</span>() <span class="sc">/</span> <span class="fu">length</span>(rt_quantiles))) <span class="sc">%&gt;%</span></span>
-<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">complete</span>(<span class="fu">nesting</span>(group, subject), blockType, difficulty, correct_response, response, rt_p, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">rt_q =</span> <span class="cn">NA</span>))</span>
-<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a>obs_p_resp <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, subject, blockType, difficulty, correct_response, response) <span class="sc">%&gt;%</span></span>
-<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">n_resp =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"keep"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a>    <span class="fu">complete</span>(<span class="fu">nesting</span>(group, subject), blockType, difficulty, correct_response, response, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">n_resp =</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(group, subject, blockType, difficulty, correct_response) <span class="sc">%&gt;%</span></span>
-<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">p_resp =</span> n_resp <span class="sc">/</span> <span class="fu">sum</span>(n_resp))</span>
-<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a>obs_pred_data <span class="ot">&lt;-</span> <span class="fu">full_join</span>(</span>
-<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>    <span class="fu">full_join</span>(obs_p_resp, obs_rt_quantiles) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">source =</span> <span class="st">"Observed"</span>),</span>
-<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a>    ddm_pred <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">source =</span> <span class="st">"Predicted"</span>)</span>
-<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">correct =</span> <span class="fu">factor</span>(correct_response <span class="sc">==</span> response, <span class="at">levels =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Correct"</span>, <span class="st">"Incorrect"</span>)))</span>
-<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>obs_pred_data <span class="sc">%&gt;%</span></span>
-<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(blockType, difficulty, correct_response, response, correct, source, rt_p) <span class="sc">%&gt;%</span></span>
-<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">rt_q =</span> <span class="fu">mean</span>(rt_q, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">p_resp =</span> <span class="fu">mean</span>(p_resp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p_resp, <span class="at">y =</span> rt_q, <span class="at">color =</span> <span class="fu">interaction</span>(correct, correct_response))) <span class="sc">+</span></span>
-<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">alpha =</span> difficulty, <span class="at">shape =</span> source)) <span class="sc">+</span></span>
-<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> source, <span class="at">group =</span> <span class="fu">interaction</span>(correct, correct_response, rt_p, source))) <span class="sc">+</span></span>
-<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="st">"blockType"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelr)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>to_fit <span class="ot">&lt;-</span> blast_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data_grid</span>(<span class="fu">nesting</span>(group, subject))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"blast_fits.rdata"</span>)) {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">load</span>(<span class="st">"blast_fits.rdata"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    model_pars <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    model_qp <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    pb <span class="ot">&lt;-</span> <span class="fu">txtProgressBar</span>(<span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fu">nrow</span>(to_fit), <span class="at">initial =</span> <span class="dv">0</span>, <span class="at">style =</span> <span class="dv">3</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (fit_index <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(to_fit)) {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        this_subj_data <span class="ot">&lt;-</span> <span class="fu">semi_join</span>(blast_data, to_fit[fit_index,])</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        this_fit <span class="ot">&lt;-</span> <span class="fu">fit_wienr</span>(</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">rt =</span> this_subj_data<span class="sc">$</span>rt,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">response =</span> (this_subj_data<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">fit_sv =</span> T, <span class="at">fit_sw =</span> F, <span class="at">fit_st0 =</span> T,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">drift_index =</span> this_subj_data<span class="sc">$</span>drift_index,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">bound_index =</span> this_subj_data<span class="sc">$</span>bound_index,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">resid_index =</span> this_subj_data<span class="sc">$</span>resid_index,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">sv_index =</span> this_subj_data<span class="sc">$</span>sv_index,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">st0_index =</span> this_subj_data<span class="sc">$</span>st0_index</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        model_pars <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>            model_pars,</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="fu">cbind</span>(to_fit[fit_index,], <span class="fu">tibble</span>(<span class="at">par_name =</span> <span class="fu">names</span>(this_fit<span class="sc">$</span>par), <span class="at">val =</span> this_fit<span class="sc">$</span>par) <span class="sc">%&gt;%</span> <span class="fu">extract</span>(par_name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"par"</span>, <span class="st">"index"</span>), <span class="at">regex =</span> <span class="st">"(.+)</span><span class="sc">\\</span><span class="st">[(.+)</span><span class="sc">\\</span><span class="st">]"</span>))</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        this_qp <span class="ot">&lt;-</span> <span class="fu">qp_fit</span>(</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>            <span class="at">rt =</span> this_subj_data<span class="sc">$</span>rt,</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>            <span class="at">response =</span> (this_subj_data<span class="sc">$</span>response <span class="sc">==</span> <span class="st">"Blast"</span>) <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>            <span class="at">par =</span> this_fit<span class="sc">$</span>par,</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>            <span class="at">drift_index =</span> this_subj_data<span class="sc">$</span>drift_index,</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>            <span class="at">bound_index =</span> this_subj_data<span class="sc">$</span>bound_index,</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>            <span class="at">resid_index =</span> this_subj_data<span class="sc">$</span>resid_index,</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>            <span class="at">sv_index =</span> this_subj_data<span class="sc">$</span>sv_index,</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">st0_index =</span> this_subj_data<span class="sc">$</span>st0_index</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        model_qp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>            model_qp,</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>            <span class="fu">cbind</span>(to_fit[fit_index,], this_qp)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setTxtProgressBar</span>(pb, fit_index)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span>(pb)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">save</span>(model_pars, model_qp, <span class="at">file =</span> <span class="st">"blast_fits.rdata"</span>)</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>model_pars <span class="sc">%&gt;%</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> index, <span class="at">y =</span> val, <span class="at">color =</span> group, <span class="at">shape =</span> group)) <span class="sc">+</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.width =</span> <span class="fl">0.1</span>, <span class="at">dodge.width =</span> <span class="fl">0.4</span>), <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">geom =</span> <span class="st">"pointrange"</span>, <span class="at">fun.data =</span> mean_cl_boot, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.4</span>)) <span class="sc">+</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="st">"par"</span>, <span class="at">scales =</span> <span class="st">"free"</span>)</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>model_qp <span class="sc">%&gt;%</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>        <span class="at">blockType =</span> <span class="fu">factor</span>(bound_index, <span class="at">labels =</span> <span class="fu">levels</span>(blast_data<span class="sc">$</span>blockType)),</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>        <span class="at">item_type =</span> <span class="fu">factor</span>(drift_index, <span class="at">labels =</span> <span class="fu">levels</span>(<span class="fu">interaction</span>(blast_data<span class="sc">$</span>difficulty, blast_data<span class="sc">$</span>correct_response, <span class="at">sep =</span> <span class="st">" "</span>, <span class="at">drop =</span> T)))</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(blockType, item_type, response, source, rt_p) <span class="sc">%&gt;%</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">rt_q =</span> <span class="fu">mean</span>(rt_q, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">p_resp =</span> <span class="fu">mean</span>(p_resp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p_resp, <span class="at">y =</span> rt_q, <span class="at">color =</span> item_type)) <span class="sc">+</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">shape =</span> source)) <span class="sc">+</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> source, <span class="at">group =</span> <span class="fu">interaction</span>(item_type, rt_p, source))) <span class="sc">+</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="st">"blockType"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="exercises" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="exercises"><span class="header-section-number">6.1</span> Exercises</h2>
-<ol type="1">
-<li>Consider a dataset with one particularly short RT. Would you want to allow for variability in residual time when fitting these data? Why or why not?</li>
-<li>Using the Shiny App, see if you can “fool” the model! Specifically, try simulating data until there is a notable discrepancy between the best-fitting parameter values and the values you used to simulate the data. What features of the simulated data may have resulted in this discrepancy?</li>
-<li>We saw an example in the chapter of how drift rates might vary between conditions of an experiment even while the other parameters of the model would stay the same.
-<ol type="a">
-<li>What other examples can you think of where the properties of the <em>evidence</em> change but other model parameters do not?</li>
-<li>Give an example of a situation in which you would expect response boundaries to differ between conditions, but not drift rates.</li>
-<li>Give an example of a situation in which you would expect residual time to differ between conditions, but not drift rates or boundaries.</li>
-</ol></li>
-<li>Repeat our recognition memory simulations and model comparisons, but instead of simulating data where the drift rate actually differs between targets and foils, simulate data in which targets and foils have the same drift rate. Use both AIC and BIC to compare the fits of the two-drift and one-drift models. Do these information criteria favor the “correct” model?</li>
-</ol>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
@@ -468,7 +401,6 @@ $ nomt             &lt;dbl&gt; 0.9166667, 0.9166667, 0.9166667, 0.9166667, 0.916
 Trueblood, J. S., Holmes, W. R., Seegmiller, A. C., Douds, J., Compton, M., Szentirmai, E., Woodruff, M., Huang, W., Stratton, C., &amp; Eichbaum, Q. (2018). The impact of speed and bias on the cognitive processes of experts and novices in medical image decision-making. <em>Cognitive Research: Principles and Implications</em>, <em>3</em>, 1–14.
 </div>
 </div>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -671,35 +671,39 @@ $info
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(obs_fit_data <span class="ot">&lt;-</span> <span class="fu">qp_fit</span>(<span class="at">rt =</span> sim_data<span class="sc">$</span>q, <span class="at">response =</span> sim_data<span class="sc">$</span>response, <span class="at">par =</span> fit<span class="sc">$</span>par))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Joining with `by = join_by(drift_index, bound_index, resid_index, response)`
-Joining with `by = join_by(drift_index, bound_index, resid_index, response,
-p_resp, rt_p, rt_q, source)`</code></pre>
+<pre><code>Joining with `by = join_by(drift_index, bound_index, resid_index, sv_index,
+sw_index, st0_index, response)`
+Joining with `by = join_by(drift_index, bound_index, resid_index, sv_index,
+sw_index, st0_index, response, p_resp, rt_p, rt_q, source)`</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 20 × 9
-# Groups:   drift_index, bound_index, resid_index [1]
-   drift_index bound_index resid_index response n_resp p_resp  rt_p  rt_q source
-         &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; 
- 1           1           1           1 lower        11  0.22    0.1 0.474 Obser…
- 2           1           1           1 lower        11  0.22    0.3 0.636 Obser…
- 3           1           1           1 lower        11  0.22    0.5 0.827 Obser…
- 4           1           1           1 lower        11  0.22    0.7 1.68  Obser…
- 5           1           1           1 lower        11  0.22    0.9 3.06  Obser…
- 6           1           1           1 upper        39  0.78    0.1 0.552 Obser…
- 7           1           1           1 upper        39  0.78    0.3 0.736 Obser…
- 8           1           1           1 upper        39  0.78    0.5 0.974 Obser…
- 9           1           1           1 upper        39  0.78    0.7 1.19  Obser…
-10           1           1           1 upper        39  0.78    0.9 1.87  Obser…
-11           1           1           1 upper        NA  0.780   0.1 0.496 Fitted
-12           1           1           1 upper        NA  0.780   0.3 0.714 Fitted
-13           1           1           1 upper        NA  0.780   0.5 0.966 Fitted
-14           1           1           1 upper        NA  0.780   0.7 1.33  Fitted
-15           1           1           1 upper        NA  0.780   0.9 2.11  Fitted
-16           1           1           1 lower        NA  0.220   0.1 0.421 Fitted
-17           1           1           1 lower        NA  0.220   0.3 0.602 Fitted
-18           1           1           1 lower        NA  0.220   0.5 0.830 Fitted
-19           1           1           1 lower        NA  0.220   0.7 1.18  Fitted
-20           1           1           1 lower        NA  0.220   0.9 1.95  Fitted</code></pre>
+<pre><code># A tibble: 20 × 12
+# Groups:   drift_index, bound_index, resid_index, sv_index, sw_index,
+#   st0_index [1]
+   drift_index bound_index resid_index sv_index sw_index st0_index response
+         &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   
+ 1           1           1           1        1        1         1 lower   
+ 2           1           1           1        1        1         1 lower   
+ 3           1           1           1        1        1         1 lower   
+ 4           1           1           1        1        1         1 lower   
+ 5           1           1           1        1        1         1 lower   
+ 6           1           1           1        1        1         1 upper   
+ 7           1           1           1        1        1         1 upper   
+ 8           1           1           1        1        1         1 upper   
+ 9           1           1           1        1        1         1 upper   
+10           1           1           1        1        1         1 upper   
+11           1           1           1        1        1         1 upper   
+12           1           1           1        1        1         1 upper   
+13           1           1           1        1        1         1 upper   
+14           1           1           1        1        1         1 upper   
+15           1           1           1        1        1         1 upper   
+16           1           1           1        1        1         1 lower   
+17           1           1           1        1        1         1 lower   
+18           1           1           1        1        1         1 lower   
+19           1           1           1        1        1         1 lower   
+20           1           1           1        1        1         1 lower   
+# ℹ 5 more variables: n_resp &lt;int&gt;, p_resp &lt;dbl&gt;, rt_p &lt;dbl&gt;, rt_q &lt;dbl&gt;,
+#   source &lt;chr&gt;</code></pre>
 </div>
 </div>
 <p>We can then use the result to overlay the quantile-probabilities from the fitted model over those computed from the observed data:</p>
@@ -756,9 +760,10 @@ maxgradient    laststep     stepmax       neval
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>obs_fit_data_large <span class="ot">&lt;-</span> <span class="fu">qp_fit</span>(<span class="at">rt =</span> sim_data_large<span class="sc">$</span>q, <span class="at">response =</span> sim_data_large<span class="sc">$</span>response, <span class="at">par =</span> fit_large<span class="sc">$</span>par)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Joining with `by = join_by(drift_index, bound_index, resid_index, response)`
-Joining with `by = join_by(drift_index, bound_index, resid_index, response,
-p_resp, rt_p, rt_q, source)`</code></pre>
+<pre><code>Joining with `by = join_by(drift_index, bound_index, resid_index, sv_index,
+sw_index, st0_index, response)`
+Joining with `by = join_by(drift_index, bound_index, resid_index, sv_index,
+sw_index, st0_index, response, p_resp, rt_p, rt_q, source)`</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -863,9 +868,10 @@ maxgradient    laststep     stepmax       neval
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>recog_obs_fit_data <span class="ot">&lt;-</span> <span class="fu">qp_fit</span>(<span class="at">rt =</span> all_trials<span class="sc">$</span>rt, <span class="at">response =</span> all_trials<span class="sc">$</span>response, <span class="at">par =</span> recog_fit<span class="sc">$</span>par, <span class="at">drift_index =</span> <span class="fu">as.numeric</span>(all_trials<span class="sc">$</span>item))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>Joining with `by = join_by(drift_index, bound_index, resid_index, response)`
-Joining with `by = join_by(drift_index, bound_index, resid_index, response,
-p_resp, rt_p, rt_q, source)`</code></pre>
+<pre><code>Joining with `by = join_by(drift_index, bound_index, resid_index, sv_index,
+sw_index, st0_index, response)`
+Joining with `by = join_by(drift_index, bound_index, resid_index, sv_index,
+sw_index, st0_index, response, p_resp, rt_p, rt_q, source)`</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -968,7 +974,7 @@ BIC = 2 \times NLL + k \log N
 </section>
 <section id="shiny-app" class="level2" data-number="5.5">
 <h2 data-number="5.5" class="anchored" data-anchor-id="shiny-app"><span class="header-section-number">5.5</span> Shiny App</h2>
-<p>The “Manual parameter fitting” tab of the <a href="https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/DiffusionModel/app.R">Shiny app from the previous chapter</a> allows you to try searching for optimal parameters yourself. You will find how difficult it is to do by hand! There is also a “Parameter recovery” tab that replicates what we did in this chapter, namely, using the diffusion model to simulate data and then fitting the diffusion model to the simulated data. Finally, note that the App allows you to play around with other parameters, like the trial-by-trial variability parameters, that we did not use in this chapter.</p>
+<p>The “Manual parameter fitting” tab of the <a href="https://raw.githubusercontent.com/gregcox7/choice_rt_models/refs/heads/main/diffusion_shiny_app.r">Shiny app from the previous chapter</a> allows you to try searching for optimal parameters yourself. You will find how difficult it is to do by hand! There is also a “Parameter recovery” tab that replicates what we did in this chapter, namely, using the diffusion model to simulate data and then fitting the diffusion model to the simulated data. Finally, note that the App allows you to play around with other parameters, like the trial-by-trial variability parameters, that we did not use in this chapter.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
