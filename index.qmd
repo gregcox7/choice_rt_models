@@ -2,11 +2,14 @@
 
 This is a collection of notes and examples that serve as an introduction to cognitive models of choice and response time.  To follow along in R, make sure you have the following packages installed.
 
-```{r eval = FALSE, echo = TRUE}
+```{r eval = TRUE, echo = TRUE}
 #| code-fold: show
 
 library(tidyverse)
+library(ucminf)
 library(WienR)
 library(fddm)
 library(rtdists)
 ```
+
+Plus, if you would like to use the Shiny app included in later Chapters, be sure you are working in RStudio with Shiny installed.

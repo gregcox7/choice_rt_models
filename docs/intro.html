@@ -217,6 +217,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#key-theoretical-constructs" id="toc-key-theoretical-constructs" class="nav-link" data-scroll-target="#key-theoretical-constructs"><span class="header-section-number">1.1.1</span> Key theoretical constructs</a></li>
   <li><a href="#models-and-parameters" id="toc-models-and-parameters" class="nav-link" data-scroll-target="#models-and-parameters"><span class="header-section-number">1.1.2</span> Models and parameters</a></li>
+  <li><a href="#tasks-amenable-to-choicert-models" id="toc-tasks-amenable-to-choicert-models" class="nav-link" data-scroll-target="#tasks-amenable-to-choicert-models"><span class="header-section-number">1.1.3</span> Tasks amenable to choice/RT models</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -267,9 +268,10 @@ window.Quarto = {
 <li>Why did a participant make the choices they made?</li>
 <li>Why did it take the participant a certain amount of time to make the choices they made?</li>
 </ol>
+<p>For the purposes of this workshop, we will focus on models of choice and RT called <strong>diffusion models</strong>.</p>
 <section id="key-theoretical-constructs" class="level3" data-number="1.1.1">
 <h3 data-number="1.1.1" class="anchored" data-anchor-id="key-theoretical-constructs"><span class="header-section-number">1.1.1</span> Key theoretical constructs</h3>
-<p>The vast majority of models of choice and RT address those two questions by invoking four basic theoretical constructs:</p>
+<p>The vast majority of models of choice and RT, including diffusion models, address the two questions above by invoking four basic theoretical constructs:</p>
 <p><strong>Evidence accumulation</strong>: Choosing from among a set of options is assumed to require accumulating “evidence” that weights either in favor of or against each option. This evidence may come from perception (e.g., deciding which of two stimuli is brighter), from memory (e.g., deciding whether an item was or was not on a previously-studied list), or from deliberation (e.g., deciding which of two products to buy). As such, the idea that decisions are made by accumulating evidence helps explain not only which choice was made (it was the option that was most favored by the accumulated evidence) and how long it took to made the choice (the time needed to accumulate sufficient evidence to commit to a decision).</p>
 <p><strong>Response caution</strong>: If decisions are made by accumulating evidence, there must be a policy that terminates the accumulation process, otherwise someone would keep accumulating evidence forever. This is the idea behind the construct of “response caution”, which is that, depending on the situation, people may adopt a policy of deciding quickly on the basis of very little evidence (low response caution) or deciding slowly by waiting for more evidence to accumulate (high response caution). Thus, this construct is directly related to the idea of <strong>speed-accuracy trade-off</strong>.</p>
 <p><strong>Response bias</strong>: It may be that a decision maker is willing to commit to some options more readily than others; in that case, we say they are “biased” in favor of some responses. Typically, this bias is modeled by assuming less response caution for some options than others. In other words, a participant may be willing to commit to some decisions on the basis of less accumulated evidence than others.</p>
@@ -278,6 +280,20 @@ window.Quarto = {
 <section id="models-and-parameters" class="level3" data-number="1.1.2">
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="models-and-parameters"><span class="header-section-number">1.1.2</span> Models and parameters</h3>
 <p>The models we will encounter have <em>parameters</em> that pertain to each of the four constructs just described. We will see how differences in the values of these parameters result in different patterns of behavior from the model. This is also how the models are “fit” to data—by finding the combination of parameter values that produces behavior that most closely resembles that produced by a participant in some task. The value of doing this is that it helps us understand <em>why</em> that participant acted the way they did. For example, we might want to know whether someone was fast because they were able to quickly accumulate the evidence they needed, because they were uncautious, because they were biased, or because they could execute motor actions quickly. We can address that question by finding the values of the parameters associated with each construct that best fit their observed performance.</p>
+</section>
+<section id="tasks-amenable-to-choicert-models" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="tasks-amenable-to-choicert-models"><span class="header-section-number">1.1.3</span> Tasks amenable to choice/RT models</h3>
+<p>In this tutorial, we will primarily focus on tasks that involve choosing between <em>two</em> options. As a result, each trial of such a task produces a <em>choice</em> (which option was picked) as well as a <em>response time</em> (how long it took to pick that choice). Framed this way, it may seem like these models are only applicable to certain kinds of decision tasks, but in fact two-choice tasks of this kind abound in the psychological literature and in real life:</p>
+<ul>
+<li>Is a person or object a member of some category or not? (a <em>categorization</em> task)</li>
+<li>Which of two products should I buy? (a common <em>decision</em> task)</li>
+<li>Should I take a risky gamble or a sure thing? (a common <em>judgment and decision making</em> task)</li>
+<li>Have I ever seen this thing before? (a <em>lexical decision</em> task)</li>
+<li>Did I encounter a person or thing in a specific context or not? (a <em>recognition memory</em> task)</li>
+<li>Are two items the same or different? (a <em>same-different</em> judgment)</li>
+<li>Is a person or object present in a scene or not? (a <em>visual search</em> task)</li>
+<li>Should I watch the next episode in a series or not? (no really, Netflix is using diffusion models to understand these kinds of decisions)</li>
+</ul>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">

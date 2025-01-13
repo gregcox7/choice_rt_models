@@ -25,9 +25,11 @@ With that high-minded philosophical stuff out of the way, the purpose of this wo
 1. Why did a participant make the choices they made?
 2. Why did it take the participant a certain amount of time to make the choices they made?
 
+For the purposes of this workshop, we will focus on models of choice and RT called **diffusion models**.
+
 ### Key theoretical constructs
 
-The vast majority of models of choice and RT address those two questions by invoking four basic theoretical constructs:
+The vast majority of models of choice and RT, including diffusion models, address the two questions above by invoking four basic theoretical constructs:
 
 **Evidence accumulation**:  Choosing from among a set of options is assumed to require accumulating "evidence" that weights either in favor of or against each option.  This evidence may come from perception (e.g., deciding which of two stimuli is brighter), from memory (e.g., deciding whether an item was or was not on a previously-studied list), or from deliberation (e.g., deciding which of two products to buy).  As such, the idea that decisions are made by accumulating evidence helps explain not only which choice was made (it was the option that was most favored by the accumulated evidence) and how long it took to made the choice (the time needed to accumulate sufficient evidence to commit to a decision).
 
@@ -40,3 +42,16 @@ The vast majority of models of choice and RT address those two questions by invo
 ### Models and parameters
 
 The models we will encounter have *parameters* that pertain to each of the four constructs just described.  We will see how differences in the values of these parameters result in different patterns of behavior from the model.  This is also how the models are "fit" to data---by finding the combination of parameter values that produces behavior that most closely resembles that produced by a participant in some task.  The value of doing this is that it helps us understand *why* that participant acted the way they did.  For example, we might want to know whether someone was fast because they were able to quickly accumulate the evidence they needed, because they were uncautious, because they were biased, or because they could execute motor actions quickly.  We can address that question by finding the values of the parameters associated with each construct that best fit their observed performance.
+
+### Tasks amenable to choice/RT models
+
+In this tutorial, we will primarily focus on tasks that involve choosing between *two* options.  As a result, each trial of such a task produces a *choice* (which option was picked) as well as a *response time* (how long it took to pick that choice).  Framed this way, it may seem like these models are only applicable to certain kinds of decision tasks, but in fact two-choice tasks of this kind abound in the psychological literature and in real life:
+
+* Is a person or object a member of some category or not? (a *categorization* task)
+* Which of two products should I buy? (a common *decision* task)
+* Should I take a risky gamble or a sure thing? (a common *judgment and decision making* task)
+* Have I ever seen this thing before? (a *lexical decision* task)
+* Did I encounter a person or thing in a specific context or not? (a *recognition memory* task)
+* Are two items the same or different? (a *same-different* judgment)
+* Is a person or object present in a scene or not? (a *visual search* task)
+* Should I watch the next episode in a series or not? (no really, Netflix is using diffusion models to understand these kinds of decisions)

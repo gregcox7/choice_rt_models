@@ -433,6 +433,8 @@ model_qp %>%
     facet_grid(blockType ~ group, scales = "free_y")
 ```
 
+The upshot is that it looke like the model is, at least on average, doing a very good job of capturing the response proportion and a pretty good one capturing the RT quantiles.  That said, some of the misfits for the highest and lowest quantiles (see, e.g., the green points in the "Speed" conditions) may be due to sampling error, as discussed earlier.
+
 ## Exercises
 
 1. Run an ANOVA analysis on other estimated model parameters, like bias (`w`), residual time (`t0`), and the two variability parameters (`sv` and `st0`).  Do you find evidence for differences, on average, between groups or between conditions (for `sv` and `st0`, you can only compare between groups)?
