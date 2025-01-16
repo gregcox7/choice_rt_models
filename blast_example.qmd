@@ -267,7 +267,7 @@ for (id in subj_to_fit) {
     
     model_pars <- rbind(
         model_pars,
-        cbind(to_fit[fit_index,], tibble(par_name = names(this_fit$par), val = this_fit$par) %>% extract(par_name, into = c("par", "index"), regex = "(.+)\\[(.+)\\]"))
+        tibble(subject = id, group = this_subj_data$group[1], par_name = names(this_fit$par), val = this_fit$par) %>% extract(par_name, into = c("par", "index"), regex = "(.+)\\[(.+)\\]")
     )
     
     this_qp <- qp_fit(
@@ -277,11 +277,12 @@ for (id in subj_to_fit) {
         drift_index = this_subj_data$drift_index,
         bound_index = this_subj_data$bound_index,
         resid_index = this_subj_data$resid_index
-    )
+    ) %>%
+        mutate(subject = id, group = this_subj_data$group[1])
     
     model_qp <- rbind(
         model_qp,
-        cbind(to_fit[fit_index,], this_qp)
+        this_qp
     )
 }
 ```

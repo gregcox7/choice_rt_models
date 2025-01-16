@@ -587,7 +587,7 @@ sw_index, st0_index, response)`</code></pre>
 <span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    model_pars <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        model_pars,</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cbind</span>(to_fit[fit_index,], <span class="fu">tibble</span>(<span class="at">par_name =</span> <span class="fu">names</span>(this_fit<span class="sc">$</span>par), <span class="at">val =</span> this_fit<span class="sc">$</span>par) <span class="sc">%&gt;%</span> <span class="fu">extract</span>(par_name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"par"</span>, <span class="st">"index"</span>), <span class="at">regex =</span> <span class="st">"(.+)</span><span class="sc">\\</span><span class="st">[(.+)</span><span class="sc">\\</span><span class="st">]"</span>))</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tibble</span>(<span class="at">subject =</span> id, <span class="at">group =</span> this_subj_data<span class="sc">$</span>group[<span class="dv">1</span>], <span class="at">par_name =</span> <span class="fu">names</span>(this_fit<span class="sc">$</span>par), <span class="at">val =</span> this_fit<span class="sc">$</span>par) <span class="sc">%&gt;%</span> <span class="fu">extract</span>(par_name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"par"</span>, <span class="st">"index"</span>), <span class="at">regex =</span> <span class="st">"(.+)</span><span class="sc">\\</span><span class="st">[(.+)</span><span class="sc">\\</span><span class="st">]"</span>)</span>
 <span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    this_qp <span class="ot">&lt;-</span> <span class="fu">qp_fit</span>(</span>
@@ -597,13 +597,14 @@ sw_index, st0_index, response)`</code></pre>
 <span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">drift_index =</span> this_subj_data<span class="sc">$</span>drift_index,</span>
 <span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">bound_index =</span> this_subj_data<span class="sc">$</span>bound_index,</span>
 <span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">resid_index =</span> this_subj_data<span class="sc">$</span>resid_index</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    model_qp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        model_qp,</span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">cbind</span>(to_fit[fit_index,], this_qp)</span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">subject =</span> id, <span class="at">group =</span> this_subj_data<span class="sc">$</span>group[<span class="dv">1</span>])</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    model_qp <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>        model_qp,</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>        this_qp</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="comparing-parameters-between-groups" class="level3" data-number="6.3.1">
